@@ -1,0 +1,128 @@
+var GraveName =  function(sex) {
+    this.sex = sex || 'male';
+    //a placeholder name generator
+    if (sex == 'male') {
+        this.nom = randChoice(['Irdanus', 'Domitianus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Horodinus']);
+    } else {
+        this.nom = randChoice(['Bellina', 'Catana', 'Delvinia', 'Cerminia', 'Lotreca', 'Hammoda']);
+    };
+    this.gen = getGenitive(this.nom);
+    this.genPlur = getGenitivePlural(this.nom);
+    this.abl = getAblative(this.nom);
+};
+
+var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate, hasBrother, surname) {
+    this.grave = grave || null;
+    this.sex = sex || randChoice(['male', 'female']);
+    this.name = name || new GraveName(this.sex);
+    this.spouse = spouse || null;
+    this.lord = lord;
+    if (this.lord === undefined) {
+        var lord_sex = randChoice(['male', 'female']);
+        this.lord = new GravePerson( null, lord_sex, new GraveName(lord_sex), null, null, getRoyalOccupation(lord_sex) );
+    };
+    this.occupation = occupation || getRandomOccupation(this);
+    this.deathDate = new GraveDeathDate(deathDate) || new GraveDeathDate( randInt(800, 1534) );
+    this.hasBrother = hasBrother || false;
+    this.surname = surname || null;    
+};
+
+var GraveDeathDate = function(year) {
+    this.year = year;
+    if (this.year % 4 == 0) {
+        this.leapYear = true;
+        var leap = 1;
+    } else {
+        this.leapYear = false;
+        var leap = 0;
+    };
+    var dayNo = randInt(365 + leap);
+    this.dayNo = dayNo;
+    if (dayNo <= 30) {
+        this.month = "Januarii";
+        this.day = dayNo + 1;
+    } else if (dayNo <= 58 + leap) {
+        this.month = "Februarii";
+        this.day = dayNo - 30;
+    } else if (dayNo <= 89 + leap) {
+        this.month = "Martii";
+        this.day = dayNo - (58 + leap);
+    } else if (dayNo <= 119 + leap) {
+        this.month = "Aprilis";
+        this.day = dayNo - (89 + leap);
+    } else if (dayNo <= 150 + leap) {
+        this.month = "Maii";
+        this.day = dayNo - (119 + leap);
+    } else if (dayNo <= 180 + leap) {
+        this.month = "Junii";
+        this.day = dayNo - (150 + leap);
+    } else if (dayNo <= 211 + leap) {
+        this.month = "Julii";
+        this.day = dayNo - (180 + leap);
+    } else if (dayNo <= 242 + leap) {
+        this.month = "Augusti";
+        this.day = dayNo - (211 + leap);
+    } else if (dayNo <= 272 + leap) {
+        this.month = "Septembris";
+        this.day = dayNo - (242 + leap);
+    } else if (dayNo <= 303 + leap) {
+        this.month = "Octobris";
+        this.day = dayNo - (272 + leap);
+    } else if (dayNo <= 333 + leap) {
+        this.month = "Novembris";
+        this.day = dayNo - (303 + leap);
+    } else {
+        this.month = "Decembris";
+        this.day = dayNo - (333 + leap);
+    };
+    this.text = numberToRoman(this.day) + " " + this.month + " AD " + numberToRoman(this.year);
+};
+
+var getRandomOccupation = function(person) {
+    if (person.sex == 'male') {
+        return( randChoice( GRAVE_OCCUPATIONS['male'] ) );
+    } else {
+        return( randChoice( GRAVE_OCCUPATIONS['female'] ) );
+    };
+};
+
+var getRoyalOccupation = function(sex) {
+    if (sex == 'male') {
+        return(GRAVE_OCCUPATIONS['king']);
+    } else {
+        return(GRAVE_OCCUPATIONS['queen']);
+    };
+};
+    
+var GRAVE_OCCUPATIONS = {
+    'male': [
+        {'nom': 'miles', 'gen': 'militis', 'hasLord': 'sub abl'},
+        {'nom': 'armiger', 'gen': 'armigeri', 'hasLord': 'gen'},
+        {'nom': 'comes', 'gen': 'comitis'},
+        {'nom': 'capellanus', 'gen': 'capellanus', 'hasLord': 'gen'}
+    ],
+    'female': [
+        {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen'}
+    ],
+    'king': {'nom': 'rex', 'gen': 'regis', 'hasPeople': 'genPlu'},
+    'queen': {'nom': 'regina', 'gen': 'reginae', 'hasPeople': 'genPlu'}
+};
+
+var Grave = function(deceasedNumber, incipitType, material, structure) {
+    this.occupants = []; //will hold the Person objects
+    this.deceasedNumber = deceasedNumber || 1;
+    this.nation = new GraveName('male');
+    this.material = material || 'petra';
+    this.structure = structure || 'floor';
+    this.incipitType = incipitType || 1;
+    if (this.deceasedNumber >= 2) {
+        this.couple = true;
+    } else {
+        this.couple = false;
+    };
+    
+    //this.occupants.push()
+};
+
+
+

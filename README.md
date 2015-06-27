@@ -1,0 +1,1 @@
+An attempt at creating a browser "roguelike" game using the rot.js library.
