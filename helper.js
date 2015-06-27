@@ -41,6 +41,23 @@ var createTileMap = function() {
     for (var i = 0; i < punctu.length; i++) {
         tileMap[punctu[i]] = [12*(i+3), 12*2];
     };
+
+    //get all the hieroglyphics
+    for (var j = 0; j < 16; j++) {
+        for (var i = 0; i < 16; i++) {
+            var serialno = i + j*16;
+            tileMap["hiero" + serialno] = [12*i, 12*(j + 19)];
+        };
+    };
+
+    //get single lines
+    tileMap['single_v'] = [12*3, 12*11]; //straight vertical
+    tileMap['single_corner_tr'] = [12*15, 12*11]; //top right corner
+    tileMap['single_corner_bl'] = [0, 12*12]; //bottom left corner
+    tileMap['single_h'] = [12*4, 12*12]; //straight horizontal
+    tileMap['single_corner_br'] = [12*9, 12*13]; //bottom right corner
+    tileMap['single_corner_tl'] = [12*10, 12*13]; //top left corner
+
     return(tileMap);
 };
 

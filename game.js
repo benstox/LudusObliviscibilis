@@ -53,7 +53,7 @@ var Game = {
         //this.map = new Map_RandomRLWallTiles();
         this.map = new Map_LargeRoomInCentre();
         this.map.createMap();
-        this.player = new Player(20, 13);
+        this.player = new Player(15, 13);
         this.beesrampu = new BeesRampu(0, 0);
         //this.james = new James(20, 20); //teleporting guy
         this.wormigee = new Wormigee(0, 17);

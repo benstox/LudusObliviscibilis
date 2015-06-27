@@ -59,11 +59,29 @@ var CaveFloor = function(x, y) {
     var g = colour + randInt(-this.colvar, this.colvar);
     var b = colour + randInt(-this.colvar, this.colvar);
     
-    //this.ch = ' ';
-    this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.col_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
+    this.ch = ' ';
+
     this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
+
+    //amount that any characters drawn on the tile will stand out by
+    this.stand_out = 30
+    this.stand_out_dark = 10
+    this.col = addRGBToColour(this.bg, this.stand_out);
+    this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
+
+};
+
+var CaveFloorHiero = function(x, y) {
+    CaveFloor.apply(this, [x, y]);
+
+    this.ch = "hiero" + randInt(16*16);
+};
+
+var CaveFloorSpecialChar = function(x, y, ch) {
+    CaveFloor.apply(this, [x, y]);
+
+    this.ch = ch;
 };
 
 var RLMessageFloor = function(x, y, message) {
@@ -77,11 +95,8 @@ var FloorTomb = function(x, y) {
     CaveFloor.apply(this, [x, y]);
     
     this.ch = '0';
-    //this.col = this.col + 15;//needs fixing!!!
-    //this.col_dark = this.col_dark + 5;
-    this.col = addRGBToColour(this.col, 24);
-    this.col_dark = addRGBToColour(this.col, 8);
-    this.message = 'Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen.';
+
+    this.message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
 };
 
 // WALL TILES
@@ -185,16 +200,23 @@ var Map = function(tile_for_floor, tile_for_wall) {
     };
 
     //set a verticle line to be all some tile (create a wall where x = constant)
-    this.set_v_line = function(x, y0, wall_length, tile) {
+    this.set_v_line = function(x, y0, wall_length, tile, extra_arg) {
         for (var i = y0; i < y0 + wall_length; i++) {
-            that.set_tile(x, i, tile);
+            that.set_tile(x, i, tile, extra_arg);
         };
     };
 
     //set a horizontal line to be all some tile (create a wall where y = constant)
-    this.set_h_line = function(x0, y, wall_length, tile) {
+    this.set_h_line = function(x0, y, wall_length, tile, extra_arg) {
         for (var i = x0; i < x0 + wall_length; i++) {
-            that.set_tile(i, y, tile);
+            that.set_tile(i, y, tile, extra_arg);
+        };
+    };
+
+    //set a rectangular area to be all some tile
+    this.set_rectangle = function(x, y, w, h, tile, extra_arg) {
+        for (var i = 0; i < w; i++) {
+            that.set_v_line( x+i, y, h, tile , extra_arg );
         };
     };
     
@@ -301,6 +323,8 @@ var Map_LargeRoomInCentre = function() {
     this.createMap = function() {
         var wall_start_y = Math.floor( 2 * Game.screen_height / 5 );
         var wall_start_x = Math.floor( Game.screen_width / 3 );
+        var throne_x = wall_start_x+Math.floor( Game.screen_width / 2 ) - 1;
+        var throne_y = wall_start_y-3;
 
         that.set_v_line( wall_start_x, wall_start_y, 7, CaveWall ); //wall with brazier next to it
         that.set_v_line( wall_start_x, wall_start_y+7+1, 3, CaveWall ); //short section to bottom left corner
@@ -314,8 +338,20 @@ var Map_LargeRoomInCentre = function() {
         that.set_v_line( wall_start_x+Math.floor( Game.screen_width / 2 ), 3 , wall_start_y+7+5-3, CaveWall ); //east wall
         that.set_h_line( wall_start_x+Math.floor( Game.screen_width / 2 )-7, 3, 4, CaveWall ); //isolated bit on north wall
 
-        new Brazier( wall_start_x+1, wall_start_y+1 );
-        new Brazier( wall_start_x+1, wall_start_y-7 );
+        //decorated floor around throne
+        that.set_rectangle( throne_x-1, throne_y-4, 2, 9, CaveFloorHiero );
+        that.set_v_line( throne_x-2, throne_y-4, 9, CaveFloorSpecialChar, 'single_v' );
+        that.set_h_line( throne_x-1, throne_y-5, 2, CaveFloorSpecialChar, 'single_h' );
+        that.set_h_line( throne_x-1, throne_y+5, 2, CaveFloorSpecialChar, 'single_h' );
+        that.set_tile( throne_x-2, throne_y-5, CaveFloorSpecialChar, 'single_corner_tl' );
+        that.set_tile( throne_x-2, throne_y+5, CaveFloorSpecialChar, 'single_corner_bl' );
+
+        new Brazier( wall_start_x+Math.floor( Game.screen_width / 2 ) - 1, wall_start_y );
+        new Brazier( wall_start_x+Math.floor( Game.screen_width / 2 ) - 1, wall_start_y-6 );
+        new Torch( 15, 14 )
+        new Throne( throne_x, throne_y );
+        new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 3, wall_start_y+7+3 )
+        new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 6, wall_start_y+7+3 )
 
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb );
     };
