@@ -1,10 +1,11 @@
-var Being = function(name, ch, col, x, y) {
+var Being = function(name, ch, col, x, y, vision_radius) {
     var that = this;
     this.name = name;
     this.col = col;
     this.ch = ch;
     this.x = x;
     this.y = y;
+    this.vision_radius = vision_radius || 5;
     Game.map.list[this.x][this.y].being = this;
     Game.map.list[this.x][this.y].blocked = true;
     //all beings have an inventory and a purse
@@ -15,7 +16,13 @@ var Being = function(name, ch, col, x, y) {
     
     //DRAW
     this.draw = function() {
-        Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+        if (Game.map.list[that.x][that.y].isThisLit()) {
+            //the tile is lit so give the being the tile's normal background
+            Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+        } else {
+            //the tile is in darkness so give the being the tile's darkened background
+            Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg_dark);
+        };
     };
     
     //ERASE

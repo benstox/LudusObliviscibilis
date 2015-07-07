@@ -1,190 +1,11 @@
-var Tile = function(ch, col, col_dark, bg, bg_dark, x, y, walkable) {
-    var that = this;
-    this.x = x;
-    this.y = y;
-    this.ch = ch;
-    this.col = col;
-    this.col_dark = col_dark;
-    this.bg = bg;
-    this.bg_dark = bg_dark;
-    this.walkable = walkable;
-    this.blocked = false; //something is blocking the square, regardless of walkability
-    this.items = [];
-    this.being = null;
-    //tile_type is used to check for example if a square is a door (then moving onto it opens it, etc.)
-    this.tile_type = null;
-    this.message = null;
-    //amount by which colour can vary
-    this.colvar = 10;
-    //this.colvar = 0;
-    
-    //draw the tile
-    this.draw = function() {
-        if (that.being) {
-            //console.log('draw being');
-            that.being.draw();
-            //console.log(that.being.ch, that.being.col, that.being.bg);
-        } else if (0 < that.items.length) {//this checks if there are any items in array
-            //console.log('draw item');
-            that.items[that.items.length - 1].draw();
-            //console.log(that.items[that.items.length - 1].ch, that.items[that.items.length - 1].col, that.items[that.items.length - 1].bg);
-        } else {
-            //console.log('draw tile');
-            Game.display.draw(that.x, that.y, that.ch, that.col, that.bg);
-            //console.log(that.ch, that.col, that.bg);
-        };
-    };
-};
-
-// FLOOR TILES
-
-var FloorTile = function(ch, col, col_dark, bg, bg_dark, x, y) {
-    Tile.apply(this, [ch, col, col_dark, bg, bg_dark, x, y, true]);
-    
-    this.tile_type = 'floor';
-};
-
-var RLFloorTile = function(x, y) {
-    FloorTile.apply(this, ['.', 'rgb(255, 255, 255)',
-                               'rgb(127, 127, 127)',
-                               'rgb(24, 24, 24)',
-                               'rgb(16, 16, 16)', x, y]);
-};
-
-var CaveFloor = function(x, y) {
-    RLFloorTile.apply(this, [x, y]);
-    
-    var colour = 100; //180 in python rl
-    var r = colour + randInt(-this.colvar, this.colvar);
-    var g = colour + randInt(-this.colvar, this.colvar);
-    var b = colour + randInt(-this.colvar, this.colvar);
-    
-    this.ch = ' ';
-
-    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
-
-    //amount that any characters drawn on the tile will stand out by
-    this.stand_out = 30
-    this.stand_out_dark = 10
-    this.col = addRGBToColour(this.bg, this.stand_out);
-    this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
-
-};
-
-var CaveFloorHiero = function(x, y) {
-    CaveFloor.apply(this, [x, y]);
-
-    this.ch = "hiero" + randInt(16*16);
-};
-
-var CaveFloorSpecialChar = function(x, y, ch) {
-    CaveFloor.apply(this, [x, y]);
-
-    this.ch = ch;
-};
-
-var RLMessageFloor = function(x, y, message) {
-    RLFloorTile.apply(this, [x, y]);
-
-    this.ch = ',';
-    this.message = message;
-};
-
-var FloorTomb = function(x, y) {
-    CaveFloor.apply(this, [x, y]);
-    
-    this.ch = '0';
-
-    this.message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
-};
-
-// WALL TILES
-
-var WallTile = function(ch, col, col_dark, bg, bg_dark, x, y) {
-    Tile.apply(this, [ch, col, col_dark, bg, bg_dark, x, y, false]);
-    
-    this.tile_type = 'wall';
-};
-
-var RLWallTile = function(x, y) {
-    //rgb(24, 24, 24) = #181818
-    WallTile.apply(this, ['#', 'rgb(255, 255, 255)',
-                               'rgb(127, 127, 127)',
-                               'rgb(24, 24, 24)',
-                               'rgb(16, 16, 16)', x, y]);
-};
-
-var CaveWall = function(x, y) {
-    RLWallTile.apply(this, [x, y]);
-    
-    var colour = 180; //110 in python rl
-    var r = colour + randInt(-this.colvar, this.colvar);
-    var g = colour + randInt(-this.colvar, this.colvar);
-    var b = colour + randInt(-this.colvar, this.colvar);
-                               
-    //this.ch = ' ';
-    this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + Math.floor(b/4) + 20 + ')';
-    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.bg_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + Math.floor(b/4) + 20 + ')';
-};
-
-// DOOR TILES
-
-//a door tile that starts closed
-var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
-    Tile.apply(this, [ch, col, col_dark, bg, bg_dark, x, y, false]);
-    
-    this.closed = true;
-
-    this.tile_type = 'door';
-
-    this.open = function() {
-        this.ch = '/';
-        this.walkable = true;
-        this.closed = false;
-    };
-    
-    this.close = function() {
-        this.ch = '+';
-        this.walkable = false;
-        this.closed = true;
-    };
-
-    if (startopen) {
-        this.open();
-    };
-};
-
-//a door tile that starts closed, brown with black background
-var RLDoorTile = function(x, y, startopen) {
-    DoorTile.apply(this, ['+',
-                      'rgb(165, 42, 42)',
-                      'rgb(82, 21, 21)',
-                      '#181818',
-                      'rgb(16, 16, 16)', x, y, startopen]);
-};
-
-var CaveDoorTile = function(x, y, startopen) {
-    RLDoorTile.apply(this, [x, y, startopen]);
-
-    var colour = 100; //180 in python rl
-    var r = colour + randInt(-this.colvar, this.colvar);
-    var g = colour + randInt(-this.colvar, this.colvar);
-    var b = colour + randInt(-this.colvar, this.colvar);
-    
-    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
-};
-
 //Map of just floor tiles
 var Map = function(tile_for_floor, tile_for_wall) {
     var that = this;
     this.width = Game.screen_width;
     this.height = Game.screen_height;
-    this.list = [];
-    this.flicker_items = [];
+    this.list = []; //this is the array of tiles on the map
+    this.flicker_items = []; //the map keeps track of any items that give off light
+    this.lit_tiles = {}; //the map keeps track of any lit tiles
     
     //set tile to be at coordinates
     this.set_tile = function(x, y, tile, extra_arg) {
@@ -247,6 +68,24 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 //put a floor tile in each square
                 that.list[i].push(new tile_for_floor(i, j));
             };
+        };
+    };
+    
+    //this function will calculate all the tiles
+    //of the map lit by a light source
+    this.calculateLitAreas = function() {
+        that.lit_tiles = {};
+        for (var i = 0; i < that.flicker_items.length; i++) {
+            //add all tiles within the light source's radius to the map's list of lit tiles
+            Game.fov.compute(
+                that.flicker_items[i].x, that.flicker_items[i].y, that.flicker_items[i].light_radius,
+                function(x, y, r, transparency) {
+                    if (isThisOnMap(x, y)) {
+                        that.lit_tiles[x + '_' + y] = true;
+                        Game.map.list[x][y].draw();
+                    };
+                }
+            );
         };
     };
 };

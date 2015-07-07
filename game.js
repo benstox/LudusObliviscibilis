@@ -13,7 +13,7 @@ var Game = {
     beesrampu: null,
     james: null,
     map: null,
-    first_turn: null,
+    fov: null,
     
     
     main: function() {
@@ -57,6 +57,16 @@ var Game = {
         this.beesrampu = new BeesRampu(0, 0);
         //this.james = new James(20, 20); //teleporting guy
         this.wormigee = new Wormigee(0, 17);
+        this.fov = new ROT.FOV.PreciseShadowcasting( function(x, y) {
+            if (isThisOnMap(x, y)) {
+                return Game.map.list[x][y].transparent;
+            } else {
+                return false;
+            };
+        } );
+        
+        //initialise the list of tiles lit by a light source
+        this.map.calculateLitAreas();
         
         this.engine = new ROT.Engine(this.scheduler);
         this.engine.start();

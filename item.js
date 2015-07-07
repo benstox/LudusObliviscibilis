@@ -9,15 +9,33 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable) {
     this.blocks = blocks; //does it block the tile it's on
     this.pickupable = pickupable; //can a being put it in their inventory
     this.pursable = pursable; //goes into player's purse, not inventory
+    this.light_giving = false;
+    this.light_radius = null;
     
     if (this.blocks) {
         Game.map.list[this.x][this.y].blocked = true;
     };
     Game.map.list[this.x][this.y].items.push(this);
-    //console.log(Game.map.list[this.x][this.y].items);
     
     this.draw = function() {
-        Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+        if (Game.map.list[that.x][that.y].isThisLit()) {
+            //the tile is lit so give the item the tile's normal background
+            Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+        } else {
+            //the tile is in darkness so give the item the tile's darkened background
+            Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg_dark);
+        };
+    };
+    
+    this.redrawAreaWithinLightRadius = function() {
+        Game.fov.compute(
+            that.x, that.y, that.light_radius,
+            function(x, y, r, transparency) {
+                if (isThisOnMap(x, y)) {
+                    Game.map.list[x][y].draw();
+                };
+            }
+        );
     };
     
 };
@@ -34,7 +52,9 @@ var Ruby = function(x, y) {
 var Torch = function(x, y) {
     InventoryItem.apply(this, ['torch', 'torches', 'fatdot', 'yellow', x, y, false]);
     
+    this.light_giving = true;
     this.hidden_behind_message = false;
+    this.light_radius = 8;
     
     Game.map.flicker_items.push(this);
 };
@@ -47,7 +67,9 @@ var Furniture = function(name, plural, ch, col, x, y, blocks) {
 var Brazier = function(x, y) {
     Furniture.apply(this, ['brazier', 'braziers', 'brazier', 'yellow', x, y, true]);
     
+    this.light_giving = true;
     this.hidden_behind_message = false;
+    this.light_radius = 8;
     
     Game.map.flicker_items.push(this);
 };

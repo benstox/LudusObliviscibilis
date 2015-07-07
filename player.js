@@ -1,7 +1,7 @@
 var Player = function(x, y) {
     var that = this;
     //make this a subclass of Being
-    Being.apply(this, ['Dietrich', '@', 'rgb(238, 238, 238)', x, y]);
+    Being.apply(this, ['Diederik', '@', 'rgb(238, 238, 238)', x, y]);
     
     //handler below does different things depending on mode of this
     this.handler_mode = 'game';
@@ -12,6 +12,14 @@ var Player = function(x, y) {
             Game.map.draw();
             Game.first_turn = false;
         };
+        
+        // //draw the new field of view around the player
+        // Game.fov.compute(
+            // that.x, that.y, that.vision_radius,
+            // function(x, y, r, transparency) {
+                // Game.display.draw(x, y, 'X', 'yellow', 'blue');
+            // }
+        // );
         
         //stops going through the list of actors (things who get a turn)
         Game.engine.lock();
@@ -27,7 +35,6 @@ var Player = function(x, y) {
             ) {
             that.handler_mode = 'message'; //tells handler what to do with inputs
             var message_text = Game.map.list[that.x][that.y].message;
-            //alert(message);
             that.message = new Message(message_text);
             that.message.trigger()
         };
@@ -98,11 +105,21 @@ var Player = function(x, y) {
     
     //add item to inventory
     this.addToInventory = function(item, pickupable_item_index) {
-        //STILL NEEDS WORK
-        //CURRENTLY ALWAYS TAKES LAST ITEM, EVEN IF IT IS NOT PICKUPABLE
         //remove the item from the tile it's on and put it in the player's inventory
         that.inventory.push( Game.map.list[item.x][item.y].items.splice(pickupable_item_index, 1)[0] );
-        //console.log(that.inventory);
+        //if the item is light-giving, remove it from the 
+        if (item.light_giving) {
+            for (var i = 0; i < Game.map.flicker_items.length; i++) {
+                if (item.name == Game.map.flicker_items[i].name &&
+                        item.x == Game.map.flicker_items[i].x &&
+                        item.y == Game.map.flicker_items[i].y) {
+                    Game.map.flicker_items.splice(i, 1);
+                    Game.map.calculateLitAreas();
+                    item.redrawAreaWithinLightRadius();
+                    break;
+                };
+            };
+        };
     };
     
     //the player picks up an item from his tile
@@ -132,8 +149,11 @@ var Player = function(x, y) {
         item.x = that.x;
         item.y = that.y;
         Game.map.list[that.x][that.y].items.push(item);
-        
-        //console.log(that.inventory);
+        //if the item is light-giving, add it to the map's flicker_items array
+        if (item.light_giving) {
+            Game.map.flicker_items.push(item);
+            Game.map.calculateLitAreas();
+        };
     };
     
     //drop an item from inventory
