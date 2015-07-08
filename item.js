@@ -1,4 +1,4 @@
-var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable) {
+var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, equipment) {
     var that = this;
     this.name = name;
     this.plural = plural;
@@ -9,6 +9,7 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable) {
     this.blocks = blocks; //does it block the tile it's on
     this.pickupable = pickupable; //can a being put it in their inventory
     this.pursable = pursable; //goes into player's purse, not inventory
+    this.equipment = equipment; //can go into a player's equipment slot
     this.light_giving = false;
     this.light_radius = null;
     
@@ -41,16 +42,16 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable) {
 };
 
 //an item that can be picked up
-var InventoryItem = function(name, plural, ch, col, x, y, pursable) {
-    Item.apply(this, [name, plural, ch, col, x, y, false, true, pursable]);
+var InventoryItem = function(name, plural, ch, col, x, y, pursable, equipment) {
+    Item.apply(this, [name, plural, ch, col, x, y, false, true, pursable, equipment]);
 };
 
 var Ruby = function(x, y) {
-    InventoryItem.apply(this, ['ruby', 'rubies', 'gem', 'red', x, y, true]);
+    InventoryItem.apply(this, ['ruby', 'rubies', 'gem', 'red', x, y, true, true]);
 };
 
 var Torch = function(x, y) {
-    InventoryItem.apply(this, ['torch', 'torches', 'fatdot', 'yellow', x, y, false]);
+    InventoryItem.apply(this, ['torch', 'torches', 'fatdot', 'yellow', x, y, false, true]);
     
     this.light_giving = true;
     this.hidden_behind_message = false;
@@ -61,7 +62,7 @@ var Torch = function(x, y) {
 
 //an item that cannot be picked up, it might block the square or it might not
 var Furniture = function(name, plural, ch, col, x, y, blocks) {
-    Item.apply(this, [name, plural, ch, col, x, y, blocks, false, false]);
+    Item.apply(this, [name, plural, ch, col, x, y, blocks, false, false, false]);
 };
 
 var Brazier = function(x, y) {

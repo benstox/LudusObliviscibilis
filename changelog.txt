@@ -1,0 +1,7 @@
+#########
+CHANGELOG
+#########
+
+8 July 2015
+-fixed issue when doors open up, they tiles behind them don't automatically become lit by light sources in front of them
+-gave beings equipment slots

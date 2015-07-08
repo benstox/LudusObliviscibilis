@@ -55,11 +55,18 @@ var OpenInventory = function() {
         } else {
             message_text = '-' + message_text + '-';
         };
-        
     };
+    
     var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p']
+    var pieces_of_equipment = 0; //keep track of how many inventory items are equipped equipment (for the alphabet)
+    for (var key in Game.player.equipment) {
+        if (Game.player.equipment[key] != null) {
+            message_text = message_text + '\n' + alphabet[pieces_of_equipment] + ') ' + Game.player.equipment[key].name + ' (' + key + ')';
+            pieces_of_equipment++;
+        };
+    };
     for (var i = 0; i < Game.player.inventory.length; i++) {
-        message_text = message_text + '\n' + alphabet[i] + ') ' + Game.player.inventory[i].name;
+        message_text = message_text + '\n' + alphabet[i + pieces_of_equipment] + ') ' + Game.player.inventory[i].name;
     };
     var message = new Message(message_text);
     message.trigger()

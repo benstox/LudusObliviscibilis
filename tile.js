@@ -156,6 +156,8 @@ var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
         this.walkable = true;
         this.transparent = true;
         this.closed = false;
+        //opening a door could change the lighting
+        Game.map.calculateLitAreas();
     };
     
     this.close = function() {
@@ -163,6 +165,8 @@ var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
         this.walkable = false;
         this.transparent = false;
         this.closed = true;
+        //closing a door could change the lighting
+        Game.map.calculateLitAreas();
     };
 
     if (startopen) {

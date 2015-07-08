@@ -3,6 +3,10 @@ var Player = function(x, y) {
     //make this a subclass of Being
     Being.apply(this, ['Diederik', '@', 'rgb(238, 238, 238)', x, y]);
     
+    //the player has two equipment slots
+    this.equipment['left hand'] = null;
+    this.equipment['right hand'] = null;
+    
     //handler below does different things depending on mode of this
     this.handler_mode = 'game';
     
@@ -81,7 +85,7 @@ var Player = function(x, y) {
                 that.pickup();
             } else if (code == ROT.VK_D) {
                 //drop an item from player's inventory
-                that.drop(that.inventory.length - 1);
+                that.drop();
             } else if (code == ROT.VK_I) {
                 that.message = OpenInventory();
             };
@@ -100,71 +104,6 @@ var Player = function(x, y) {
             window.removeEventListener('keydown', that);
             that.handler_mode = 'game';
             window.addEventListener('keydown', that);
-        };
-    };
-    
-    //add item to inventory
-    this.addToInventory = function(item, pickupable_item_index) {
-        //remove the item from the tile it's on and put it in the player's inventory
-        that.inventory.push( Game.map.list[item.x][item.y].items.splice(pickupable_item_index, 1)[0] );
-        //if the item is light-giving, remove it from the 
-        if (item.light_giving) {
-            for (var i = 0; i < Game.map.flicker_items.length; i++) {
-                if (item.name == Game.map.flicker_items[i].name &&
-                        item.x == Game.map.flicker_items[i].x &&
-                        item.y == Game.map.flicker_items[i].y) {
-                    Game.map.flicker_items.splice(i, 1);
-                    Game.map.calculateLitAreas();
-                    item.redrawAreaWithinLightRadius();
-                    break;
-                };
-            };
-        };
-    };
-    
-    //the player picks up an item from his tile
-    this.pickup = function() {
-        var last_item_i = Game.map.list[that.x][that.y].items.length;
-        var pickupable_items = Game.map.list[that.x][that.y].items.filter( function(x) { return(x.pickupable) } );
-        //check if there are any pickupable items
-        if (pickupable_items.length > 0) {
-            //find the index of the last pickupable item
-            for (var i = last_item_i - 1; i >= 0; i--) {
-                if (Game.map.list[that.x][that.y].items[i].pickupable) {
-                    var last_pickupable_item_i = i;
-                };
-            };
-            //run the function that actually removes the item from the map and puts it in inventory
-            that.addToInventory( Game.map.list[that.x][that.y].items[last_pickupable_item_i], last_pickupable_item_i );
-            //set the player's last move to 'picked up'
-            that.last_move = 'picked up';
-            Game.engine.unlock();
-        };
-    };
-
-    //remove item from inventory
-    this.removeFromInventory = function() {
-        //remove the item from the player's inventory and put it on the player's tile
-        var item = that.inventory.pop();
-        item.x = that.x;
-        item.y = that.y;
-        Game.map.list[that.x][that.y].items.push(item);
-        //if the item is light-giving, add it to the map's flicker_items array
-        if (item.light_giving) {
-            Game.map.flicker_items.push(item);
-            Game.map.calculateLitAreas();
-        };
-    };
-    
-    //drop an item from inventory
-    this.drop = function() {
-        
-        var last_item_i = that.inventory.length;
-        if (0 < last_item_i) {
-            that.removeFromInventory();
-            //set the player's last move to 'dropped'
-            that.last_move = 'dropped';
-            Game.engine.unlock();
         };
     };
     
