@@ -5,3 +5,11 @@ CHANGELOG
 8 July 2015
 -fixed issue when doors open up, they tiles behind them don't automatically become lit by light sources in front of them
 -gave beings equipment slots
+
+26 Sept 2015
+-worked on Latin text for tombs
+
+TO DO:
+-get torches to light tiles when equipped
+-rubies should not equip any more
+-exploration/line of sight

@@ -9,6 +9,7 @@ var GraveName =  function(sex) {
     this.gen = getGenitive(this.nom);
     this.genPlur = getGenitivePlural(this.nom);
     this.abl = getAblative(this.nom);
+    this.dat = getDative(this.nom);
 };
 
 var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate, hasBrother, surname) {
@@ -79,19 +80,15 @@ var GraveDeathDate = function(year) {
 };
 
 var getRandomOccupation = function(person) {
-    if (person.sex == 'male') {
-        return( randChoice( GRAVE_OCCUPATIONS['male'] ) );
-    } else {
-        return( randChoice( GRAVE_OCCUPATIONS['female'] ) );
-    };
+    return( randChoice( GRAVE_OCCUPATIONS[person.sex] ) );
 };
 
 var getRoyalOccupation = function(sex) {
-    if (sex == 'male') {
-        return(GRAVE_OCCUPATIONS['king']);
-    } else {
-        return(GRAVE_OCCUPATIONS['queen']);
-    };
+    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['royal'] == true;}));
+};
+
+var getNonCelibateOccupation = function(sex) {
+    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['celibate'] == false;}));
 };
     
 var GRAVE_OCCUPATIONS = {
@@ -99,13 +96,16 @@ var GRAVE_OCCUPATIONS = {
         {'nom': 'miles', 'gen': 'militis', 'hasLord': 'sub abl'},
         {'nom': 'armiger', 'gen': 'armigeri', 'hasLord': 'gen'},
         {'nom': 'comes', 'gen': 'comitis'},
-        {'nom': 'capellanus', 'gen': 'capellanus', 'hasLord': 'gen'}
+        {'nom': 'capellanus', 'gen': 'capellanus', 'hasLord': 'dat', 'celibate': true},
+        {'nom': 'rex', 'gen': 'regis', 'dat': 'regi', 'hasPeople': 'genPlu', 'royal': true},
+        {'nom': 'monachus', 'gen': 'monachi', 'celibate': true, 'hasMonastery': 'gen'}
     ],
     'female': [
-        {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen'}
-    ],
-    'king': {'nom': 'rex', 'gen': 'regis', 'hasPeople': 'genPlu'},
-    'queen': {'nom': 'regina', 'gen': 'reginae', 'hasPeople': 'genPlu'}
+        {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen'},
+        {'nom': 'abbatissa', 'gen': 'abbatissae', 'celibate': true, 'hasMonastery': 'gen'},
+        {'nom': 'monialis', 'gen': 'monialis', 'celibate': true, 'hasMonastery': 'gen'},
+        {'nom': 'regina', 'gen': 'reginae', 'dat': 'reginae', 'hasPeople': 'genPlu', 'royal': true}
+    ]
 };
 
 var Grave = function(deceasedNumber, incipitType, material, structure) {
@@ -120,8 +120,20 @@ var Grave = function(deceasedNumber, incipitType, material, structure) {
     } else {
         this.couple = false;
     };
-    
-    //this.occupants.push()
+    //add each person to the list of occupants
+    for(var i=0; i < this.deceasedNumber; i++) {
+        if (i == 0 && this.couple == true) {
+            //the husband
+            this.occupants.push(new GravePerson(this, 'male', null, null, getNonCelibateOccupation('male')));
+        } else if (i == 1 && this.couple == true) {
+            //the wife
+            this.occupants.push(new GravePerson(this, 'female', null, this.occupants[0], getNonCelibateOccupation('female')));
+            this.occupants[0].spouse = this.occupants[1];
+        } else {
+            //unmarried
+            this.occupants.push(new GravePerson(this));
+        };
+    };
 };
 
 
