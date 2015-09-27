@@ -1,16 +1,29 @@
-var GraveName =  function(sex) {
+var GraveName = function(sex) {
     this.sex = sex || 'male';
     //a placeholder name generator
     if (sex == 'male') {
-        this.nom = randChoice(['Irdanus', 'Domitianus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Horodinus']);
+        this.nom = randChoice(['Irdanus', 'Domitianus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Stamblinius', 'Hofarrus', 'Tavlinius', 'Diraeus', 'Corophanus', 'Mivius', 'Hiridinus', 'Horodinus']);
     } else {
-        this.nom = randChoice(['Bellina', 'Catana', 'Delvinia', 'Cerminia', 'Lotreca', 'Hammoda']);
+        this.nom = randChoice(['Bellina', 'Stallia', 'Davria', 'Davenna', 'Hoptina', 'Mantia', 'Savvia', 'Catana', 'Delvinia', 'Cerminia', 'Domira', 'Vureca', 'Talissa', 'Lotreca', 'Konda', 'Loba', 'Hammoda']);
     };
     this.gen = getGenitive(this.nom);
     this.genPlur = getGenitivePlural(this.nom);
     this.abl = getAblative(this.nom);
     this.dat = getDative(this.nom);
 };
+
+
+var NationName = function() {
+    GraveName.apply(this, ['female']);
+    this.demonymNom = this.nom + 'nus';
+    this.demonymGen = getGenitive(this.demonymNom);
+    this.demonymGenPlur = getGenitivePlural(this.demonymNom);
+    this.demonymAbl = getAblative(this.demonymNom);
+    this.demonymDat = getDative(this.demonymNom);
+};
+NationName.prototype = Object.create(GraveName.prototype);
+NationName.prototype.constructor = NationName;
+
 
 var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate, hasBrother, surname) {
     this.grave = grave || null;
@@ -27,6 +40,7 @@ var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate
     this.hasBrother = hasBrother || false;
     this.surname = surname || null;    
 };
+
 
 var GraveDeathDate = function(year) {
     this.year = year;
@@ -79,17 +93,21 @@ var GraveDeathDate = function(year) {
     this.text = numberToRoman(this.day) + " " + this.month + " AD " + numberToRoman(this.year);
 };
 
+
 var getRandomOccupation = function(person) {
     return( randChoice( GRAVE_OCCUPATIONS[person.sex] ) );
 };
+
 
 var getRoyalOccupation = function(sex) {
     return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['royal'] == true;}));
 };
 
+
 var getNonCelibateOccupation = function(sex) {
     return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['celibate'] == false;}));
 };
+
     
 var GRAVE_OCCUPATIONS = {
     'male': [
@@ -108,10 +126,11 @@ var GRAVE_OCCUPATIONS = {
     ]
 };
 
+
 var Grave = function(deceasedNumber, incipitType, material, structure) {
     this.occupants = []; //will hold the Person objects
     this.deceasedNumber = deceasedNumber || 1;
-    this.nation = new GraveName('male');
+    this.nation = Game.nation;
     this.material = material || 'petra';
     this.structure = structure || 'floor';
     this.incipitType = incipitType || 1;

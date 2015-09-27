@@ -50,6 +50,7 @@ var Game = {
         //something
         this.scheduler = new ROT.Scheduler.Simple();
         this.flicker_scheduler = new ROT.Scheduler.Simple();
+        this.nation = new NationName();
         //this.map = new Map_RandomRLWallTiles();
         this.map = new Map_LargeRoomInCentre();
         this.map.createMap();
@@ -81,5 +82,6 @@ var Game = {
         //console.log('Map drawn');
     }
 };
+
 
 Game.main();

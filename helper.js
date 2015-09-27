@@ -61,6 +61,7 @@ var createTileMap = function() {
     return(tileMap);
 };
 
+
 //check if coordinates are on the map/screen/thing
 var isThisOnMap = function(x, y) {
     if (x >= 0 &&
@@ -73,6 +74,7 @@ var isThisOnMap = function(x, y) {
         };
 };
 
+
 //check if the tile under coordinates is walkable
 //i.e. is walkable and not blocked
 var isThisWalkable = function(x, y) {
@@ -82,6 +84,7 @@ var isThisWalkable = function(x, y) {
         return false;
     };
 };
+
 
 //get a random integer
 //randInt(1) can only return 0
@@ -101,15 +104,18 @@ var randInt = function(number1, number2) {
     return less + Math.floor(ROT.RNG.getUniform() * diff);
 };
 
+
 var randChoice = function(choice_list) {
     var index = randInt(choice_list.length);
     return( choice_list[index] );
 };
 
+
 function pauseComp(ms) {
     ms += new Date().getTime();
     while (new Date() < ms){}
 };
+
 
 var flicker = function(i) {
     //This is the colour generator I used in my python rl:
@@ -127,6 +133,7 @@ var flicker = function(i) {
         };
     };
 };
+
 
 var numberToRoman = function(num) {
     roman = "";
@@ -188,6 +195,41 @@ var numberToRoman = function(num) {
     return roman;
 };
 
+
+var getFeminineVersionOfNom = function(nom) {
+    if ( nom.substring(nom.length - 2) == 'um' || nom.substring(nom.length - 2) == 'us' ) {
+        var fem = nom.substring(0, nom.length - 2) + 'a';
+    } else {
+        var fem = nom;
+    };
+    return(fem);
+};
+
+
+var getMasculineVersionOfNom = function(nom) {
+    if ( nom.substring(nom.length - 2) == 'um' ) {
+        var masc = nom.substring(0, nom.length - 2) + 'us';
+    } else if ( nom.substring(nom.length - 1) == 'a' ) {
+        var masc = nom.substring(0, nom.length - 1) + 'us';
+    } else {
+        var masc = nom;
+    };
+    return(masc);
+};
+
+
+var getNeuterVersionOfNom = function(nom) {
+    if ( nom.substring(nom.length - 2) == 'us' ) {
+        var neut = nom.substring(0, nom.length - 2) + 'um';
+    } else if ( nom.substring(nom.length - 1) == 'a' ) {
+        var neut = nom.substring(0, nom.length - 1) + 'um';
+    } else {
+        var neut = nom;
+    };
+    return(neut);
+};
+
+
 var getGenitive = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var gen = nom.substring(0, nom.length - 2) + 'i';
@@ -196,6 +238,7 @@ var getGenitive = function(nom) {
     };
     return(gen);
 };
+
 
 var getGenitivePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -206,6 +249,7 @@ var getGenitivePlural = function(nom) {
     return(gen);
 };
 
+
 var getDative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var dat = nom.substring(0, nom.length - 2) + 'o';
@@ -214,6 +258,7 @@ var getDative = function(nom) {
     };
     return(dat);
 };
+
 
 var getDativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -224,6 +269,7 @@ var getDativePlural = function(nom) {
     return(dat);
 };
 
+
 var getAccusative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var acc = nom.substring(0, nom.length - 1) + 'm';
@@ -232,6 +278,7 @@ var getAccusative = function(nom) {
     };
     return(acc);
 };
+
 
 var getAccusativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -242,6 +289,7 @@ var getAccusativePlural = function(nom) {
     return(acc);
 };
 
+
 var getAblative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var abl = nom.substring(0, nom.length - 2) + 'o';
@@ -251,6 +299,7 @@ var getAblative = function(nom) {
     return(abl);
 };
 
+
 var getAblativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var abl = nom.substring(0, nom.length - 2) + 'is';
@@ -259,6 +308,7 @@ var getAblativePlural = function(nom) {
     };
     return(abl);
 };
+
 
 var getVocative = function(nom) {
     if ( nom.substring(nom.length - 3) == 'ius' ) {
@@ -271,10 +321,12 @@ var getVocative = function(nom) {
     return(voc);
 };
 
+
 var getNominativePlural = function(nom) {
     var plu = getGenitive(nom);
     return(plu);
 };
+
 
 //add a certain rgb value to a colour
 var addRGBToColour = function(colour_string, value_to_add, rgb) {
