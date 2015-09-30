@@ -1,3 +1,5 @@
+"use strict";
+
 var Game = {
     tileset: null,
     screen_width: null,

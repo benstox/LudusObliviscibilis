@@ -1,3 +1,5 @@
+"use strict";
+
 var GraveName = function(sex) {
     this.sex = sex || 'male';
     //a placeholder name generator
