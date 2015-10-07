@@ -4,9 +4,9 @@ var GraveName = function(sex) {
     this.sex = sex || 'male';
     //a placeholder name generator
     if (sex == 'male') {
-        this.nom = randChoice(['Irdanus', 'Domitianus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Stamblinius', 'Hofarrus', 'Tavlinius', 'Diraeus', 'Corophanus', 'Mivius', 'Hiridinus', 'Horodinus']);
+        this.nom = randChoice(['Irdanus', 'Domitianus', 'Exerikus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Stamblinius', 'Hofarrus', 'Tavlinius', 'Diraeus', 'Corophanus', 'Mivius', 'Hiridinus', 'Horodinus']);
     } else {
-        this.nom = randChoice(['Bellina', 'Stallia', 'Davria', 'Davenna', 'Hoptina', 'Mantia', 'Savvia', 'Catana', 'Delvinia', 'Cerminia', 'Domira', 'Vureca', 'Talissa', 'Lotreca', 'Konda', 'Loba', 'Hammoda']);
+        this.nom = randChoice(['Bellina', 'Stallia', 'Davria', 'Davenna', 'Hoptina', 'Mantia', 'Savvia', 'Catana', 'Delvinia', 'Cerminia', 'Domira', 'Vureca', 'Talissa', 'Lotreca', 'Konda', 'Loba', 'Hammoda', 'Bathesba', 'Selacia']);
     };
     this.gen = getGenitive(this.nom);
     this.genPlur = getGenitivePlural(this.nom);

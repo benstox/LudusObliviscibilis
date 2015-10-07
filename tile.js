@@ -1,5 +1,4 @@
 var Tile = function(ch, col, col_dark, bg, bg_dark, x, y, walkable, transparent) {
-    var that = this;
     this.x = x;
     this.y = y;
     this.coords = this.x + '_' + this.y;
@@ -20,32 +19,9 @@ var Tile = function(ch, col, col_dark, bg, bg_dark, x, y, walkable, transparent)
     //amount by which colour can vary
     this.colvar = 10;
     //this.colvar = 0;
-    
-    //find out if this tile is lit by a light source
-    this.isThisLit = function() {
-        return(that.x + '_' + that.y in Game.map.lit_tiles);
-    };
-    
-    //draw the tile
-    this.draw = function() {
-        if (that.being) {
-            //DRAW THE BEING (top priority)
-            that.being.draw();
-        } else if (0 < that.items.length) {//this checks if there are any items in array
-            //DRAW THE ITEM
-            that.items[that.items.length - 1].draw();
-        } else {
-            //DRAW THE TILE
-            if (that.isThisLit()) {
-                //the tile is lit, draw its normal colours
-                Game.display.draw(that.x, that.y, that.ch, that.col, that.bg);
-            } else {
-                //the tile is in darkness, draw its darkened colours
-                Game.display.draw(that.x, that.y, that.ch, that.col_dark, that.bg_dark);
-            };
-        };
-    };
 };
+    //find out if this tile is lit by a light sourceTile.prototype.isThisLit = function() {    return(this.x + '_' + this.y in Game.map.lit_tiles);};//draw the tileTile.prototype.draw = function() {    if (this.being) {        //DRAW THE BEING (top priority)        this.being.draw();    } else if (0 < this.items.length) {//this checks if there are any items in array        //DRAW THE ITEM        this.items[this.items.length - 1].draw();    } else {        //DRAW THE TILE        if (this.isThisLit()) {            //the tile is lit, draw its normal colours            Game.display.draw(this.x, this.y, this.ch, this.col, this.bg);        } else {            //the tile is in darkness, draw its darkened colours            Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);        };    };};
+
 
 // FLOOR TILES
 
@@ -54,6 +30,8 @@ var FloorTile = function(ch, col, col_dark, bg, bg_dark, x, y) {
     
     this.tile_type = 'floor';
 };
+FloorTile.prototype = Object.create(Tile.prototype);
+FloorTile.prototype.constructor = FloorTile;
 
 var RLFloorTile = function(x, y) {
     FloorTile.apply(this, ['.', 'rgb(255, 255, 255)',
@@ -61,6 +39,8 @@ var RLFloorTile = function(x, y) {
                                'rgb(24, 24, 24)',
                                'rgb(16, 16, 16)', x, y]);
 };
+RLFloorTile.prototype = Object.create(FloorTile.prototype);
+RLFloorTile.prototype.constructor = RLFloorTile;
 
 var CaveFloor = function(x, y) {
     RLFloorTile.apply(this, [x, y]);
@@ -80,20 +60,25 @@ var CaveFloor = function(x, y) {
     this.stand_out_dark = 10
     this.col = addRGBToColour(this.bg, this.stand_out);
     this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
-
 };
+CaveFloor.prototype = Object.create(RLFloorTile.prototype);
+CaveFloor.prototype.constructor = CaveFloor;
 
 var CaveFloorHiero = function(x, y) {
     CaveFloor.apply(this, [x, y]);
 
     this.ch = "hiero" + randInt(16*16);
 };
+CaveFloorHiero.prototype = Object.create(CaveFloor.prototype);
+CaveFloorHiero.prototype.constructor = CaveFloorHiero;
 
 var CaveFloorSpecialChar = function(x, y, ch) {
     CaveFloor.apply(this, [x, y]);
 
     this.ch = ch;
 };
+CaveFloorSpecialChar.prototype = Object.create(CaveFloor.prototype);
+CaveFloorSpecialChar.prototype.constructor = CaveFloorSpecialChar;
 
 var RLMessageFloor = function(x, y, message) {
     RLFloorTile.apply(this, [x, y]);
@@ -101,6 +86,8 @@ var RLMessageFloor = function(x, y, message) {
     this.ch = ',';
     this.message = message;
 };
+RLMessageFloor.prototype = Object.create(RLFloorTile.prototype);
+RLMessageFloor.prototype.constructor = RLMessageFloor;
 
 var FloorTomb = function(x, y) {
     CaveFloor.apply(this, [x, y]);
@@ -109,6 +96,8 @@ var FloorTomb = function(x, y) {
 
     this.message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
 };
+FloorTomb.prototype = Object.create(CaveFloor.prototype);
+FloorTomb.prototype.constructor = FloorTomb;
 
 // WALL TILES
 
@@ -117,6 +106,8 @@ var WallTile = function(ch, col, col_dark, bg, bg_dark, x, y) {
     
     this.tile_type = 'wall';
 };
+WallTile.prototype = Object.create(Tile.prototype);
+WallTile.prototype.constructor = WallTile;
 
 var RLWallTile = function(x, y) {
     //rgb(24, 24, 24) = #181818
@@ -125,6 +116,8 @@ var RLWallTile = function(x, y) {
                                'rgb(24, 24, 24)',
                                'rgb(16, 16, 16)', x, y]);
 };
+RLWallTile.prototype = Object.create(WallTile.prototype);
+RLWallTile.prototype.constructor = RLWallTile;
 
 var CaveWall = function(x, y) {
     RLWallTile.apply(this, [x, y]);
@@ -140,6 +133,8 @@ var CaveWall = function(x, y) {
     this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.bg_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
 };
+CaveWall.prototype = Object.create(RLWallTile.prototype);
+CaveWall.prototype.constructor = CaveWall;
 
 // DOOR TILES
 
@@ -150,29 +145,14 @@ var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
     this.closed = true;
 
     this.tile_type = 'door';
-
-    this.open = function() {
-        this.ch = '/';
-        this.walkable = true;
-        this.transparent = true;
-        this.closed = false;
-        //opening a door could change the lighting
-        Game.map.calculateLitAreas();
-    };
     
-    this.close = function() {
-        this.ch = '+';
-        this.walkable = false;
-        this.transparent = false;
-        this.closed = true;
-        //closing a door could change the lighting
-        Game.map.calculateLitAreas();
-    };
-
     if (startopen) {
         this.open();
     };
 };
+DoorTile.prototype = Object.create(Tile.prototype);
+DoorTile.prototype.constructor = DoorTile;
+DoorTile.prototype.open = function() {    this.ch = '/';    this.walkable = true;    this.transparent = true;    this.closed = false;    //opening a door could change the lighting    Game.map.calculateLitAreas();};DoorTile.prototype.close = function() {    this.ch = '+';    this.walkable = false;    this.transparent = false;    this.closed = true;    //closing a door could change the lighting    Game.map.calculateLitAreas();};
 
 //a door tile that starts closed, brown with black background
 var RLDoorTile = function(x, y, startopen) {
@@ -182,6 +162,8 @@ var RLDoorTile = function(x, y, startopen) {
                       '#181818',
                       'rgb(16, 16, 16)', x, y, startopen]);
 };
+RLDoorTile.prototype = Object.create(DoorTile.prototype);
+RLDoorTile.prototype.constructor = RLDoorTile;
 
 var CaveDoorTile = function(x, y, startopen) {
     RLDoorTile.apply(this, [x, y, startopen]);
@@ -194,4 +176,6 @@ var CaveDoorTile = function(x, y, startopen) {
     this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
 };
+CaveDoorTile.prototype = Object.create(RLDoorTile.prototype);
+CaveDoorTile.prototype.constructor = CaveDoorTile;
 
