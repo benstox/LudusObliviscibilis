@@ -6,6 +6,15 @@ var Map = function(tile_for_floor, tile_for_wall) {
     this.list = []; //this is the array of tiles on the map
     this.flicker_items = []; //the map keeps track of any items that give off light
     this.lit_tiles = {}; //the map keeps track of any lit tiles
+
+    //initialise the map
+    for(var i = 0; i < this.width; i++) {
+        this.list.push([]);
+        for (var j = 0; j < this.height; j++) {
+            //put a floor tile in each square
+            this.list[i].push(new tile_for_floor(i, j));
+        };
+    };
     
     //set tile to be at coordinates
     this.set_tile = function(x, y, tile, extra_arg) {
@@ -59,17 +68,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
             };
         };
     };
-    
-    //initialise the map
-    this.createMap = function() {
-        for(var i = 0; i < that.width; i++) {
-            that.list.push([]);
-            for (var j = 0; j < that.height; j++) {
-                //put a floor tile in each square
-                that.list[i].push(new tile_for_floor(i, j));
-            };
-        };
-    };
+
     
     //this function will calculate all the tiles
     //of the map lit by a light source
@@ -157,7 +156,7 @@ var Map_LargeRoomInCentre = function() {
     var that = this;
     var plan = 
     Map.apply(this, [CaveFloor, CaveWall]);
-    this.createMap();
+    //this.createMap();
     
     this.createMap = function() {
         var wall_start_y = Math.floor( 2 * Game.screen_height / 5 );
