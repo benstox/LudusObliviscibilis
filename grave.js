@@ -41,6 +41,10 @@ var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate
     this.deathDate = new GraveDeathDate(deathDate) || new GraveDeathDate( randInt(800, 1534) );
     this.hasBrother = hasBrother || false;
     this.surname = surname || null;    
+    this.nameTitle = {
+        "nom": [this.name.nom, this.occupation.nom].join(" "),
+        "gen": [this.name.gen, this.occupation.gen].join(" ")
+    }
 };
 
 
@@ -155,7 +159,6 @@ var Grave = function(deceasedNumber, incipitType, material, structure) {
             this.occupants.push(new GravePerson(this));
         };
     };
+    
+    this.inscription = 'An inscription reads, "Hic jacet ' + this.occupants[0].nameTitle.nom + ' cujus animae propitietur Deus. Amen."'
 };
-
-
-

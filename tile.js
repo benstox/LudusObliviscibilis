@@ -98,12 +98,12 @@ RLMessageFloor.prototype = Object.create(RLFloorTile.prototype);
 RLMessageFloor.prototype.constructor = RLMessageFloor;
 
 
-var FloorTomb = function(x, y) {
+var FloorTomb = function(x, y, message) {
     CaveFloor.apply(this, [x, y]);
     
     this.ch = '0';
-
-    this.message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
+    this.grave = new Grave();
+    this.message = message || this.grave.inscription;
 };
 FloorTomb.prototype = Object.create(CaveFloor.prototype);
 FloorTomb.prototype.constructor = FloorTomb;
