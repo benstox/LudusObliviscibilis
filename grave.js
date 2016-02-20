@@ -194,9 +194,9 @@ var Grave = function(deceasedNumber, material, structure) {
     };
     
     this.inscription = [
-        'An inscription reads, "',
-        this.incipit,
+        'An inscription reads,',
+        '"' + this.incipit,
         this.occupants[0].nameTitle.nom,
-        ' cujus animae propitietur Deus. Amen."'
+        'cujus animae propitietur Deus. Amen."'
     ].join(" ");
 };
