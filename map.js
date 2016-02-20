@@ -195,5 +195,3 @@ var Map_LargeRoomInCentre = function() {
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
     };
 };
-
-

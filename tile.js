@@ -197,4 +197,3 @@ var CaveDoorTile = function(x, y, startopen) {
 };
 CaveDoorTile.prototype = Object.create(RLDoorTile.prototype);
 CaveDoorTile.prototype.constructor = CaveDoorTile;
-

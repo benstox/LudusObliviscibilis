@@ -1,3 +1,8 @@
+//Capitalize only first letter of a string
+var capitalizeFirstLetter = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 //create a tilemap for terminalglyphs12x12_alpha.png
 //basically a dictionary that provides a 'key' for each character in the map
 var createTileMap = function() {
@@ -101,8 +106,8 @@ var randInt = function(number1, number2) {
         var less = number1;
     };
     var diff = great - less;
-    //return less + Math.floor(ROT.RNG.getUniform() * diff);
-    return less + Math.floor(Math.random()*diff); //DEBUG
+    return less + Math.floor(ROT.RNG.getUniform() * diff);
+    //return less + Math.floor(Math.random()*diff); //DEBUG
 };
 
 
@@ -343,6 +348,3 @@ var addRGBToColour = function(colour_string, value_to_add, rgb) {
     };
     return(ROT.Color.toRGB(colour_array));
 };
-
-
-

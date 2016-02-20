@@ -1,9 +1,4 @@
 "use strict";
-var capitalizeFirstLetter = function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
 var GraveName = function(sex) {
     this.sex = sex || 'male';
     //a placeholder name generator
@@ -136,6 +131,7 @@ var GRAVE_OCCUPATIONS = {
     ]
 };
 
+
 var LATIN_WORDS = {
     'this': {
         'm': {'nom': 'hic', 'gen': 'hujus', 'abl': 'hoc'},
@@ -144,10 +140,12 @@ var LATIN_WORDS = {
     }
 };
 
+
 var MATERIALS = [
     {'nom': 'petra', 'gen': 'petrae', 'abl': 'petra', 'gender': 'f'},
     {'nom': 'marmor', 'gen': 'marmoris', 'abl': 'marmore', 'gender': 'n'}
 ];
+
 
 var GraveIncipit = function(material) {
     this.material = material || MATERIALS[0];
@@ -165,6 +163,7 @@ var GraveIncipit = function(material) {
         "jacet"
     ].join(" ");
 };
+
 
 var Grave = function(deceasedNumber, material, structure) {
     this.occupants = []; //will hold the Person objects
@@ -194,5 +193,10 @@ var Grave = function(deceasedNumber, material, structure) {
         };
     };
     
-    this.inscription = 'An inscription reads, "' + [this.incipit, this.occupants[0].nameTitle.nom].join(" ") + ' cujus animae propitietur Deus. Amen."'
+    this.inscription = [
+        'An inscription reads, "',
+        this.incipit,
+        this.occupants[0].nameTitle.nom,
+        ' cujus animae propitietur Deus. Amen."'
+    ].join(" ");
 };
