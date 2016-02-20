@@ -1,4 +1,8 @@
 "use strict";
+var capitalizeFirstLetter = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 
 var GraveName = function(sex) {
     this.sex = sex || 'male';
@@ -132,14 +136,44 @@ var GRAVE_OCCUPATIONS = {
     ]
 };
 
+var LATIN_WORDS = {
+    'this': {
+        'm': {'nom': 'hic', 'gen': 'hujus', 'abl': 'hoc'},
+        'f': {'nom': 'haec', 'gen': 'hujus', 'abl': 'hac'},
+        'n': {'nom': 'hoc', 'gen': 'hujus', 'abl': 'hoc'}
+    }
+};
 
-var Grave = function(deceasedNumber, incipitType, material, structure) {
+var MATERIALS = [
+    {'nom': 'petra', 'gen': 'petrae', 'abl': 'petra', 'gender': 'f'},
+    {'nom': 'marmor', 'gen': 'marmoris', 'abl': 'marmore', 'gender': 'n'}
+];
+
+var GraveIncipit = function(material) {
+    this.material = material || MATERIALS[0];
+    this.location = randChoice([
+        'hic',
+        [
+            LATIN_WORDS['this'][this.material.gender].abl,
+            'sub',
+            this.material.abl
+        ].join(" ")
+    ]);
+    
+    this.incipit = [
+        capitalizeFirstLetter(this.location),
+        "jacet"
+    ].join(" ");
+};
+
+var Grave = function(deceasedNumber, material, structure) {
     this.occupants = []; //will hold the Person objects
     this.deceasedNumber = deceasedNumber || 1;
-    this.nation = Game.nation;
-    this.material = material || 'petra';
+    //this.nation = Game.nation;
+    this.nation = new NationName();
+    this.material = material || randChoice(MATERIALS);
     this.structure = structure || 'floor';
-    this.incipitType = incipitType || 1;
+    this.incipit = new GraveIncipit(this.material).incipit;
     if (this.deceasedNumber >= 2) {
         this.couple = true;
     } else {
@@ -160,5 +194,5 @@ var Grave = function(deceasedNumber, incipitType, material, structure) {
         };
     };
     
-    this.inscription = 'An inscription reads, "Hic jacet ' + this.occupants[0].nameTitle.nom + ' cujus animae propitietur Deus. Amen."'
+    this.inscription = 'An inscription reads, "' + [this.incipit, this.occupants[0].nameTitle.nom].join(" ") + ' cujus animae propitietur Deus. Amen."'
 };
