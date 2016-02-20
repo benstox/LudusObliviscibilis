@@ -147,21 +147,76 @@ var MATERIALS = [
 ];
 
 
-var GraveIncipit = function(material) {
+var TOMBS = [
+    {'nom': 'sepulchrum', 'gen': 'sepulchri', 'abl': 'sepulchro', 'gender': 'n'},
+    {'nom': 'tumulus', 'gen': 'tumuli', 'abl': 'tumulo', 'gender': 'm'},
+    {'nom': 'monumentum', 'gen': 'monumenti', 'abl': 'monumento', 'gender': 'n'}
+];
+
+
+var GraveIncipit = function(material, occupants) {
     this.material = material || MATERIALS[0];
+    this.occupants = occupants || new GravePerson();
+    this.tomb = randChoice(TOMBS);
     this.location = randChoice([
         'hic',
         [
             LATIN_WORDS['this'][this.material.gender].abl,
             'sub',
             this.material.abl
-        ].join(" ")
+        ].join(" "),
+        [
+            'in',
+            LATIN_WORDS['this'][this.tomb.gender].abl,
+            this.tomb.abl
+        ].join(" "),
     ]);
-    
+    var jacet_choices = [
+        "jacet",
+        "requiescit",
+        "quiescit",
+        "resurrectionem expectat",
+        "diem expectat resurrectionis"
+    ];
+    var jacet_choice = randChoice(jacet_choices);
     this.incipit = [
         capitalizeFirstLetter(this.location),
-        "jacet"
-    ].join(" ");
+        jacet_choice
+    ];
+    if(randInt(3) == 0 && jacet_choice.search('resurrection') == -1) {
+        var plenus = 'plenus';
+        if(this.occupants[0].sex == 'female') {
+            plenus = getFeminineVersionOfNom(plenus);
+        };
+        this.incipit.push(
+            randChoice([
+                "in spe",
+                "in spe resurrectionis",
+                "in spe beatae resurrectionis",
+                "resurrectionem expectans",
+                "in pace",
+                "in Christo",
+                plenus + " spe", // redo these three so that they can be applied independently??
+                plenus + " fide",
+                plenus + " charitate"
+            ])
+        );
+    };
+    if(randInt(3) == 0) {
+        var servus = ['servus', 'famulus', 'amicus'];
+        if(this.occupants[0].sex == 'female') {
+            for(var i = 0; i < servus.length; i++) {
+                servus[i] = getFeminineVersionOfNom(servus[i]);
+            };
+        };
+        this.incipit.push(
+            [
+                randChoice(servus),
+                'Dei'
+            ].join(" ")
+        );
+    };
+    this.incipit = this.incipit.join(" ");
 };
 
 
@@ -171,8 +226,8 @@ var Grave = function(deceasedNumber, material, structure) {
     //this.nation = Game.nation;
     this.nation = new NationName();
     this.material = material || randChoice(MATERIALS);
-    this.structure = structure || 'floor';
-    this.incipit = new GraveIncipit(this.material).incipit;
+    this.structure = structure || randChoice(['floor', 'monument']);
+    
     if (this.deceasedNumber >= 2) {
         this.couple = true;
     } else {
@@ -192,6 +247,8 @@ var Grave = function(deceasedNumber, material, structure) {
             this.occupants.push(new GravePerson(this));
         };
     };
+    
+    this.incipit = new GraveIncipit(this.material, this.occupants).incipit;
     
     this.inscription = [
         'An inscription reads,',

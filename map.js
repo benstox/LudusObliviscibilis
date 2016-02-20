@@ -193,5 +193,7 @@ var Map_LargeRoomInCentre = function() {
 
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."' );
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
+        that.set_tile( wall_start_x + 3, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
+        that.set_tile( wall_start_x + 5, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
     };
 };
