@@ -100,7 +100,6 @@ RLMessageFloor.prototype.constructor = RLMessageFloor;
 
 var FloorTomb = function(x, y, message, material) {
     CaveFloor.apply(this, [x, y]);
-    console.log(x, y, message, material);
     this.ch = '0';
     this.material = material || null;
     this.grave = new Grave(1, material);
