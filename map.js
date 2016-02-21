@@ -17,16 +17,16 @@ var Map = function(tile_for_floor, tile_for_wall) {
     };
     
     //set tile to be at coordinates
-    this.set_tile = function(x, y, tile, extra_arg) {
-        extra_arg = extra_arg || null;
-        //console.log(extra_arg)
-        if (extra_arg == null) {
-            that.list[x][y] = new tile(x, y);
-            //console.log(x, y)
-        } else {
-            that.list[x][y] = new tile(x, y, extra_arg);
-            //console.log(x, y, extra_arg)
+    this.set_tile = function(x, y, tile) {
+        //any number of arguments can now be passed to the tile
+        var extra_args = [];
+        for (var i = 0; i < arguments.length; i++) {
+            if (i > 2) {
+                extra_args.push(arguments[i]);
+            };
         };
+        //some ugly javascript that passes the arguments properly
+        that.list[x][y] = new (Function.prototype.bind.apply( tile, [null, x, y].concat(extra_args) ));
     };
 
     //set a verticle line to be all some tile (create a wall where x = constant)
@@ -191,7 +191,9 @@ var Map_LargeRoomInCentre = function() {
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 3, wall_start_y+7+3 )
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 6, wall_start_y+7+3 )
 
-        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."' );
+        var arthur_message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
+        var marble = MATERIALS[1];
+        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, arthur_message, marble );
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
         that.set_tile( wall_start_x + 3, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
         that.set_tile( wall_start_x + 5, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );

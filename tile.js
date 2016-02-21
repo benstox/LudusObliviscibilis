@@ -61,8 +61,8 @@ var CaveFloor = function(x, y) {
     this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
 
     //amount that any characters drawn on the tile will stand out by
-    this.stand_out = 30
-    this.stand_out_dark = 10
+    this.stand_out = 30;
+    this.stand_out_dark = 10;
     this.col = addRGBToColour(this.bg, this.stand_out);
     this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
 };
@@ -98,12 +98,19 @@ RLMessageFloor.prototype = Object.create(RLFloorTile.prototype);
 RLMessageFloor.prototype.constructor = RLMessageFloor;
 
 
-var FloorTomb = function(x, y, message) {
+var FloorTomb = function(x, y, message, material) {
     CaveFloor.apply(this, [x, y]);
-    
+    console.log(x, y, message, material);
     this.ch = '0';
-    this.grave = new Grave();
+    this.material = material || null;
+    this.grave = new Grave(1, material);
     this.message = message || this.grave.inscription;
+    if(this.grave.material.nom == 'marmor') {
+        this.stand_out = 3 * this.stand_out;
+        this.stand_out_dark = 1.5 * this.stand_out_dark;
+        this.col = addRGBToColour(this.bg, this.stand_out);
+        this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
+    };
 };
 FloorTomb.prototype = Object.create(CaveFloor.prototype);
 FloorTomb.prototype.constructor = FloorTomb;
