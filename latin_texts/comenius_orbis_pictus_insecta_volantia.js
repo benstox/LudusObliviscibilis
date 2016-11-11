@@ -1,0 +1,1 @@
+var comenius_orbis_pictus_insecta_volantia = "Apis facit mel quod Fucus depascit Vespa et Crabro infestant oculeo et Oestrum Asilus imprimis pecus autem Musca et Culex nos Gryllus cantillat Papilio est alata Eruca Scaraboeus tegit alas vaginis Cicindela Lampyris nitet noctu Retro";

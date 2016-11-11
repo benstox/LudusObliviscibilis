@@ -1,0 +1,1 @@
+var comenius_orbis_pictus_planetarum_aspectus = "Luna percurrit Zodiacum singulis Mensibus Sol Anno Mercurius et Venus circa Solem illa CXV haec DLXXXV Diebus Mars Biennio Jupiter fere duodecim Saturnus triginta annis Hinc conveniunt varie inter se et se mutuo adspiciunt Ut hic sunt et in Conjunctione et Luna in Oppositione et in Trigono et in Quadratura et in Sextili";

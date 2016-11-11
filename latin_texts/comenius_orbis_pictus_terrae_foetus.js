@@ -1,0 +1,1 @@
+var comenius_orbis_pictus_terrae_foetus = "Pratum fert Gramina cum Floribus et Herbis quae defecta fiunt Foenum Arvum fert Fruges et Olera Fungi Fraga Myrtilli et c Proveniunt in Sylvis Metalla Lapides Mineralia nascuntur sub terra";

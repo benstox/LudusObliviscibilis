@@ -348,3 +348,6 @@ var addRGBToColour = function(colour_string, value_to_add, rgb) {
     };
     return(ROT.Color.toRGB(colour_array));
 };
+
+// ------------- LATIN MARKOV CHAINS -----------------
+
