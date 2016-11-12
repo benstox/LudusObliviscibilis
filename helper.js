@@ -106,7 +106,7 @@ var makeLatinName = function (gender, min_length, max_length) {
         name.push(letter);
         if (name.length > min_length &&
             terminals.hasOwnProperty(letter)) break;
-    }
+    };
     name = name.join("");
     if (name.length < min_length ||
         LATIN_BAD_COMBINATIONS.some(function (x) {return(x.test(name));}) ||
@@ -359,7 +359,7 @@ var getNeuterVersionOfNom = function(nom) {
 };
 
 var getGenitive = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var gen = nom.substring(0, nom.length - 2) + 'i';
     } else {
         var gen = nom + 'e'; 
@@ -368,7 +368,7 @@ var getGenitive = function(nom) {
 };
 
 var getGenitivePlural = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var gen = nom.substring(0, nom.length - 2) + 'orum';
     } else {
         var gen = nom + 'rum'; 
@@ -377,7 +377,7 @@ var getGenitivePlural = function(nom) {
 };
 
 var getDative = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var dat = nom.substring(0, nom.length - 2) + 'o';
     } else {
         var dat = nom + 'e'; 
@@ -386,7 +386,7 @@ var getDative = function(nom) {
 };
 
 var getDativePlural = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var dat = nom.substring(0, nom.length - 2) + 'is';
     } else {
         var dat = nom.substring(0, nom.length - 1) + 'is';
@@ -397,6 +397,8 @@ var getDativePlural = function(nom) {
 var getAccusative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var acc = nom.substring(0, nom.length - 1) + 'm';
+    } else if ( nom.substring(nom.length - 2) == 'um' ) {
+        var acc = nom;
     } else {
         var acc = nom + 'm'; 
     };
@@ -404,7 +406,7 @@ var getAccusative = function(nom) {
 };
 
 var getAccusativePlural = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var acc = nom.substring(0, nom.length - 2) + 'os';
     } else {
         var acc = nom + 's'; 
@@ -413,7 +415,7 @@ var getAccusativePlural = function(nom) {
 };
 
 var getAblative = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var abl = nom.substring(0, nom.length - 2) + 'o';
     } else {
         var abl = nom; 
@@ -422,7 +424,7 @@ var getAblative = function(nom) {
 };
 
 var getAblativePlural = function(nom) {
-    if ( nom.substring(nom.length - 2) == 'us' ) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
         var abl = nom.substring(0, nom.length - 2) + 'is';
     } else {
         var abl = nom.substring(0, nom.length - 1) + 'is';
@@ -442,8 +444,21 @@ var getVocative = function(nom) {
 };
 
 var getNominativePlural = function(nom) {
-    var plu = getGenitive(nom);
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 1) == 'a' ) {
+        var plu = getGenitive(nom);
+    } else {
+        var plu = nom.substring(0, nom.length - 2) + 'a';
+    };
     return(plu);
+};
+
+var getLocationAdjective = function(nom) {
+    if ( nom.substring(nom.length - 2) == 'us' || nom.substring(nom.length - 2) == 'um' ) {
+        var adj = nom.substring(0, nom.length - 2) + 'ensis';
+    } else {
+        var adj = nom.substring(0, nom.length - 1) + 'ensis';
+    };
+    return(adj);
 };
 
 // ------------------- OTHER -------------------
