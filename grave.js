@@ -3,9 +3,13 @@ var GraveName = function(sex) {
     this.sex = sex || 'male';
     //a placeholder name generator
     if (sex == 'male') {
-        this.nom = randChoice(['Irdanus', 'Domitianus', 'Exerikus', 'Akkraticus', 'Devistianus', 'Doromitus', 'Thesmanius', 'Crodonus', 'Caelivinus', 'Stamblinius', 'Hofarrus', 'Tavlinius', 'Diraeus', 'Corophanus', 'Mivius', 'Hiridinus', 'Horodinus']);
+        this.nom = makeLatinName("masculine");
+    } else if (sex == 'female') {
+        this.nom = makeLatinName("feminine");
+    } else if (sex == 'nation') {
+        this.nom = makeLatinName("feminine_ia");
     } else {
-        this.nom = randChoice(['Bellina', 'Stallia', 'Davria', 'Davenna', 'Hoptina', 'Mantia', 'Savvia', 'Catana', 'Delvinia', 'Cerminia', 'Domira', 'Vureca', 'Talissa', 'Lotreca', 'Konda', 'Loba', 'Hammoda', 'Bathesba', 'Selacia']);
+        this.nom = makeLatinName("neuter");
     };
     this.gen = getGenitive(this.nom);
     this.genPlur = getGenitivePlural(this.nom);
@@ -15,7 +19,7 @@ var GraveName = function(sex) {
 
 
 var NationName = function() {
-    GraveName.apply(this, ['female']);
+    GraveName.apply(this, ['nation']);
     this.demonymNom = this.nom + 'nus';
     this.demonymGen = getGenitive(this.demonymNom);
     this.demonymGenPlur = getGenitivePlural(this.demonymNom);
@@ -39,11 +43,27 @@ var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate
     this.occupation = occupation || getRandomOccupation(this);
     this.deathDate = new GraveDeathDate(deathDate) || new GraveDeathDate( randInt(800, 1534) );
     this.hasBrother = hasBrother || false;
-    this.surname = surname || null;    
+    this.surname = surname || null;
+    // how their name will appear on inscriptions
     this.nameTitle = {
-        "nom": [this.name.nom, this.occupation.nom].join(" "),
+        "nom": [this.name.nom, this.occupation.nom],
         "gen": [this.name.gen, this.occupation.gen].join(" ")
-    }
+    };
+    // add some extras onto the end of the occupation in the nameTitle
+    if (this.occupation["hasPeople"]) {
+        this.nameTitle["nom"].push(getGenitivePlural(Game.nation.demonymNom));
+    } else if (this.occupation["hasNation"]) {
+        this.nameTitle["nom"].push(getLocationAdjective(Game.nation.nom));
+    } else if (this.occupation["hasMonastery"]) {
+        var saint = randChoice(Game.local_saints);
+        if (saint.endsWith("us")) {
+            this.nameTitle["nom"].push("Sancti");
+        } else {
+            this.nameTitle["nom"].push("Sanctae");
+        };
+        this.nameTitle["nom"].push(getGenitive(saint));
+    };
+    this.nameTitle["nom"] = this.nameTitle["nom"].join(" ");
 };
 
 
@@ -105,7 +125,7 @@ var getRandomOccupation = function(person) {
 
 
 var getRoyalOccupation = function(sex) {
-    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['royal'] == true;}));
+    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['social_class'] == "monarch";}));
 };
 
 
@@ -116,18 +136,32 @@ var getNonCelibateOccupation = function(sex) {
     
 var GRAVE_OCCUPATIONS = {
     'male': [
-        {'nom': 'miles', 'gen': 'militis', 'hasLord': 'sub abl'},
-        {'nom': 'armiger', 'gen': 'armigeri', 'hasLord': 'gen'},
-        {'nom': 'comes', 'gen': 'comitis'},
-        {'nom': 'capellanus', 'gen': 'capellanus', 'hasLord': 'dat', 'celibate': true},
-        {'nom': 'rex', 'gen': 'regis', 'dat': 'regi', 'hasPeople': 'genPlu', 'royal': true},
-        {'nom': 'monachus', 'gen': 'monachi', 'celibate': true, 'hasMonastery': 'gen'}
+        {'nom': 'panifex', 'gen': 'panificis', 'social_class': 'commoner'},
+        {'nom': 'piscator', 'gen': 'piscatoris', 'social_class': 'commoner'},
+        {'nom': 'agricola', 'gen': 'agricolae', 'social_class': 'commoner'},
+        {'nom': 'cervesarius', 'gen': 'cervesarii', 'social_class': 'commoner'},
+        {'nom': 'vespillo', 'gen': 'vespillonis', 'social_class': 'commoner'},
+        {'nom': 'mercator', 'gen': 'mercatoris', 'social_class': 'middle'},
+        {'nom': 'miles', 'gen': 'militis', 'hasLord': 'sub abl', 'social_class': 'military'},
+        {'nom': 'armiger', 'gen': 'armigeri', 'hasLord': 'gen', 'social_class': 'military'},
+        {'nom': 'comes', 'gen': 'comitis', 'social_class': 'aristocrat'},
+        {'nom': 'dux', 'gen': 'ducis', 'social_class': 'aristocrat'},
+        {'nom': 'clerus', 'gen': 'cleri', 'celibate': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'presbyter', 'gen': 'presbyteris', 'celibate': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'sacerdos', 'gen': 'sacerdotis', 'celibate': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'monachus', 'gen': 'monachi', 'celibate': true, 'hasMonastery': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'capellanus', 'gen': 'capellanus', 'hasLord': 'dat', 'celibate': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'episcopus', 'gen': 'episcopi', 'hasNation': 'loc_adj', 'celibate': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'rex', 'gen': 'regis', 'dat': 'regi', 'hasPeople': true, 'social_class': 'monarch'},
+        {'nom': 'consors', 'gen': 'consortis', 'dat': 'consorti', 'hasLord': 'gen', 'social_class': 'royal'},
+        {'nom': 'princeps', 'gen': 'principis', 'dat': 'principi', 'social_class': 'royal'},
     ],
     'female': [
-        {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen'},
-        {'nom': 'abbatissa', 'gen': 'abbatissae', 'celibate': true, 'hasMonastery': 'gen'},
-        {'nom': 'monialis', 'gen': 'monialis', 'celibate': true, 'hasMonastery': 'gen'},
-        {'nom': 'regina', 'gen': 'reginae', 'dat': 'reginae', 'hasPeople': 'genPlu', 'royal': true}
+        {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen', 'social_class': 'commoner'},
+        {'nom': 'abbatissa', 'gen': 'abbatissae', 'celibate': true, 'hasMonastery': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'monialis', 'gen': 'monialis', 'celibate': true, 'hasMonastery': true, 'social_class': 'ecclesiastic'},
+        {'nom': 'regina', 'gen': 'reginae', 'dat': 'reginae', 'hasPeople': true, 'social_class': 'monarch'},
+        {'nom': 'regina', 'gen': 'reginae', 'dat': 'reginae', 'hasLord': 'gen', 'social_class': 'royal'},
     ]
 };
 
@@ -221,10 +255,9 @@ var GraveIncipit = function(material, occupants) {
 
 
 var Grave = function(deceasedNumber, material, structure) {
-    this.occupants = []; //will hold the Person objects
+    this.occupants = []; // will hold the Person objects
     this.deceasedNumber = deceasedNumber || 1;
-    //this.nation = Game.nation;
-    this.nation = new NationName();
+    this.nation = Game.nation;
     this.material = material || randChoice(MATERIALS);
     this.structure = structure || randChoice(['floor', 'monument']);
     
@@ -233,17 +266,17 @@ var Grave = function(deceasedNumber, material, structure) {
     } else {
         this.couple = false;
     };
-    //add each person to the list of occupants
+    // add each person to the list of occupants
     for(var i=0; i < this.deceasedNumber; i++) {
         if (i == 0 && this.couple == true) {
-            //the husband
+            // the husband
             this.occupants.push(new GravePerson(this, 'male', null, null, getNonCelibateOccupation('male')));
         } else if (i == 1 && this.couple == true) {
-            //the wife
+            // the wife
             this.occupants.push(new GravePerson(this, 'female', null, this.occupants[0], getNonCelibateOccupation('female')));
             this.occupants[0].spouse = this.occupants[1];
         } else {
-            //unmarried
+            // unmarried
             this.occupants.push(new GravePerson(this));
         };
     };
@@ -253,7 +286,12 @@ var Grave = function(deceasedNumber, material, structure) {
     this.inscription = [
         'An inscription reads,',
         '"' + this.incipit,
-        this.occupants[0].nameTitle.nom,
-        'cujus animae propitietur Deus. Amen."'
-    ].join(" ");
+        this.occupants[0].nameTitle.nom];
+
+    if (this.deceasedNumber == 1) {
+        this.inscription.push('cujus animae propitietur Deus. Amen."');
+    } else {
+        this.inscription.push('quorum animabus propitietur Deus. Amen."');
+    };
+    this.inscription = this.inscription.join(" ");
 };

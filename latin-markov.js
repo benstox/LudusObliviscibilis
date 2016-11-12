@@ -17,6 +17,7 @@ var LATIN_BAD_COMBINATIONS = [
     /^ss/,
     /^pth/,
     /^cc/,
+    /^ff/,
     new RegExp("[" + LATIN_SONORANTS + "]cc"),
     new RegExp("[" + LATIN_CONSONANTS + "][" + LATIN_SONORANTS + "][" + LATIN_CONSONANTS + "]"),
     new RegExp("[" + LATIN_CONSONANTS + "]{5}"),
