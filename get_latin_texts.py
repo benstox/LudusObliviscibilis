@@ -45,7 +45,7 @@ with open("game.html", "r") as gf:
     game_file = gf.read()
 
 script_tags = "\n        ".join(
-    ['<script class="training-text" src="{}"></script>'.format(filename)
+    ['<script class="training-text" src="latin_texts/{}"></script>'.format(filename)
      for filename in new_files]) + "\n        "
 new_game_file = re.sub('(<script src="helper.js"></script>\n        )', "\\1{}".format(script_tags), game_file)
 

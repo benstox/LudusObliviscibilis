@@ -1,7 +1,124 @@
+// ------------------- STRING FUNCTIONS -------------------
+
 //Capitalize only first letter of a string
 var capitalizeFirstLetter = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+var reverseString = function(s) {
+    // reverse a string
+    return s.split('').reverse().join('');
+};
+
+var separateLetters = function(words) {
+    // put a space between every letter of every word
+    for (var i = 0; i < words.length; i++) {
+        words[i] = words[i].split("").join(" ");
+    };
+    return(words);
+};
+
+// ------------------- MARKOV AND ARRAYS OF STRINGS -------------------
+
+var getWordsFromText = function(text) {
+    // split a text into an array of words
+    var words = text.split(" ");
+    return(words);
+};
+
+var getWordsStartingWith = function(words, starting) {
+    // get only the words that start with a certain string from an array of words
+    words = words.filter(function (x) {return(x.startsWith(starting));});
+    return(words);
+};
+
+var getWordsEndingWith = function(words, ending) {
+    // get only the words that end with a certain string from an array of words
+    words = words.filter(function (x) {return(x.endsWith(ending));});
+    return(words);
+};
+
+var getWordsNotEndingWith = function(words, ending) {
+    // get only the words that don't end with a certain string from an array of words
+    words = words.filter(function (x) {return(!x.endsWith(ending));});
+    return(words);
+};
+
+var getWordsOfMinLength = function(words, min_length) {
+    // get only the words of a certain minimum length from an array of words
+    words = words.filter(function (x) {return(x.length >= min_length);});
+    return(words);
+};
+
+var filterRomanNumerals = function(words) {
+    // filter out roman numerals from the list of words
+    words = words.filter(function (x) {return(
+        !/^(?=[mdclxvi])m*(c[md]|d?c*)(x[cl]|l?x*)(i[xv]|v?i*)$/.test(x.toLowerCase()));});
+    return(words);
+};
+
+var normalizeVariations = function(words, variation, ending) {
+    words = words.map(function(x) {return(x.replace(variation, ending))})
+    return(words);
+};
+
+var hasTooManyLettersInARow = function(
+        word, letter_type, not_exceeding) {
+    // does this word have too many letters of a
+    // certain type in a row? E.g. too many
+    // consonants in a row?
+    how_many = 0
+    for (var i = 0; i < word.length; i++) {
+        if (letter_type.search(word[i]) != -1) {
+            how_many = how_many + 1;
+            if (how_many > not_exceeding) {
+                return(true);
+            };
+        } else {
+            how_many = 0;
+        };
+    };
+    return(false);
+};
+
+var getUnique = function (value, index, self) { 
+    // get unique values from an array
+    return self.indexOf(value) === index;
+};
+
+var regexToString = function(regex) {
+    var result = regex.toString().replace(/\//g, "").replace("$", "").replace("^", "");
+    return(result);
+};
+
+var makeLatinName = function (gender, min_length, max_length) {
+    // generate a random Latin name using a Markov chains
+    min_length = min_length || 5;
+    max_length = max_length || 15;
+    var startletters = latin_genders[gender]["startletters"];
+    var letterstats = latin_genders[gender]["letterstats"];
+    var terminals = latin_genders[gender]["terminals"];
+    letter = randChoice(startletters);
+    var name = [letter];
+    while (letterstats.hasOwnProperty(letter)) {
+        var next_letters = letterstats[letter];
+        letter = randChoice(next_letters);
+        name.push(letter);
+        if (name.length > min_length &&
+            terminals.hasOwnProperty(letter)) break;
+    }
+    name = name.join("");
+    if (name.length < min_length ||
+        LATIN_BAD_COMBINATIONS.some(function (x) {return(x.test(name));}) ||
+        name.length > max_length) {
+            return makeLatinName(gender, min_length, max_length);};
+    // replace certain bad endings 
+    name = name.replace(/[^u]{1}s$/, "us");
+    name = name.replace(/[^u]{1}m$/, "um");
+    return capitalizeFirstLetter(name);
+};
+
+// ------------------- DISPLAY -------------------
 
 //create a tilemap for terminalglyphs12x12_alpha.png
 //basically a dictionary that provides a 'key' for each character in the map
@@ -66,6 +183,39 @@ var createTileMap = function() {
     return(tileMap);
 };
 
+//add a certain rgb value to a colour
+var addRGBToColour = function(colour_string, value_to_add, rgb) {
+    var colour_array = ROT.Color.fromString(colour_string);
+    if (rgb == 'r') {
+        colour_array[0] = colour_array[0] + value_to_add;
+    } else if (rgb == 'g') {
+        colour_array[1] = colour_array[1] + value_to_add;
+    } else if (rgb == 'b') {
+        colour_array[2] = colour_array[2] + value_to_add;
+    } else {
+        colour_array = colour_array.map( function(x) { return(x + value_to_add) } );
+    };
+    return(ROT.Color.toRGB(colour_array));
+};
+
+var flicker = function(i) {
+    //This is the colour generator I used in my python rl:
+    //libtcod.Color(255, 153+libtcod.random_get_int(0,-150, 100), 0)
+    //console.log('flicker' + i);
+    for (var h = 0; h < Game.map.flicker_items.length; h++) {
+        var x = Game.map.flicker_items[h].x;
+        var y = Game.map.flicker_items[h].y;
+        var g = randInt(3, 253);
+        //Game.map.flicker_items[h].col = ROT.Color.toHex( ROT.Color.interpolate([255, 255, 0], [255, 0, 0], ROT.RNG.getUniform()) );
+        Game.map.flicker_items[h].col = ROT.Color.toHex( [255, g, 0] );
+        //console.log(Game.map.flicker_items[h].col);
+        if (Game.map.flicker_items[h].hidden_behind_message == false) {
+            Game.map.list[x][y].draw();
+        };
+    };
+};
+
+// ------------------- MAP -------------------
 
 //check if coordinates are on the map/screen/thing
 var isThisOnMap = function(x, y) {
@@ -79,7 +229,6 @@ var isThisOnMap = function(x, y) {
         };
 };
 
-
 //check if the tile under coordinates is walkable
 //i.e. is walkable and not blocked
 var isThisWalkable = function(x, y) {
@@ -90,6 +239,7 @@ var isThisWalkable = function(x, y) {
     };
 };
 
+// ------------------- RANDOM NUMBERS -------------------
 
 //get a random integer
 //randInt(1) can only return 0
@@ -110,36 +260,12 @@ var randInt = function(number1, number2) {
     //return less + Math.floor(Math.random()*diff); //DEBUG
 };
 
-
 var randChoice = function(choice_list) {
     var index = randInt(choice_list.length);
     return( choice_list[index] );
 };
 
-
-function pauseComp(ms) {
-    ms += new Date().getTime();
-    while (new Date() < ms){}
-};
-
-
-var flicker = function(i) {
-    //This is the colour generator I used in my python rl:
-    //libtcod.Color(255, 153+libtcod.random_get_int(0,-150, 100), 0)
-    //console.log('flicker' + i);
-    for (var h = 0; h < Game.map.flicker_items.length; h++) {
-        var x = Game.map.flicker_items[h].x;
-        var y = Game.map.flicker_items[h].y;
-        var g = randInt(3, 253);
-        //Game.map.flicker_items[h].col = ROT.Color.toHex( ROT.Color.interpolate([255, 255, 0], [255, 0, 0], ROT.RNG.getUniform()) );
-        Game.map.flicker_items[h].col = ROT.Color.toHex( [255, g, 0] );
-        //console.log(Game.map.flicker_items[h].col);
-        if (Game.map.flicker_items[h].hidden_behind_message == false) {
-            Game.map.list[x][y].draw();
-        };
-    };
-};
-
+// ------------------- LATIN STUFF -------------------
 
 var numberToRoman = function(num) {
     roman = "";
@@ -201,7 +327,6 @@ var numberToRoman = function(num) {
     return roman;
 };
 
-
 var getFeminineVersionOfNom = function(nom) {
     if ( nom.substring(nom.length - 2) == 'um' || nom.substring(nom.length - 2) == 'us' ) {
         var fem = nom.substring(0, nom.length - 2) + 'a';
@@ -210,7 +335,6 @@ var getFeminineVersionOfNom = function(nom) {
     };
     return(fem);
 };
-
 
 var getMasculineVersionOfNom = function(nom) {
     if ( nom.substring(nom.length - 2) == 'um' ) {
@@ -223,7 +347,6 @@ var getMasculineVersionOfNom = function(nom) {
     return(masc);
 };
 
-
 var getNeuterVersionOfNom = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var neut = nom.substring(0, nom.length - 2) + 'um';
@@ -235,7 +358,6 @@ var getNeuterVersionOfNom = function(nom) {
     return(neut);
 };
 
-
 var getGenitive = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var gen = nom.substring(0, nom.length - 2) + 'i';
@@ -244,7 +366,6 @@ var getGenitive = function(nom) {
     };
     return(gen);
 };
-
 
 var getGenitivePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -255,7 +376,6 @@ var getGenitivePlural = function(nom) {
     return(gen);
 };
 
-
 var getDative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var dat = nom.substring(0, nom.length - 2) + 'o';
@@ -264,7 +384,6 @@ var getDative = function(nom) {
     };
     return(dat);
 };
-
 
 var getDativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -275,7 +394,6 @@ var getDativePlural = function(nom) {
     return(dat);
 };
 
-
 var getAccusative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var acc = nom.substring(0, nom.length - 1) + 'm';
@@ -284,7 +402,6 @@ var getAccusative = function(nom) {
     };
     return(acc);
 };
-
 
 var getAccusativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
@@ -295,7 +412,6 @@ var getAccusativePlural = function(nom) {
     return(acc);
 };
 
-
 var getAblative = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var abl = nom.substring(0, nom.length - 2) + 'o';
@@ -305,7 +421,6 @@ var getAblative = function(nom) {
     return(abl);
 };
 
-
 var getAblativePlural = function(nom) {
     if ( nom.substring(nom.length - 2) == 'us' ) {
         var abl = nom.substring(0, nom.length - 2) + 'is';
@@ -314,7 +429,6 @@ var getAblativePlural = function(nom) {
     };
     return(abl);
 };
-
 
 var getVocative = function(nom) {
     if ( nom.substring(nom.length - 3) == 'ius' ) {
@@ -327,27 +441,14 @@ var getVocative = function(nom) {
     return(voc);
 };
 
-
 var getNominativePlural = function(nom) {
     var plu = getGenitive(nom);
     return(plu);
 };
 
+// ------------------- OTHER -------------------
 
-//add a certain rgb value to a colour
-var addRGBToColour = function(colour_string, value_to_add, rgb) {
-    var colour_array = ROT.Color.fromString(colour_string);
-    if (rgb == 'r') {
-        colour_array[0] = colour_array[0] + value_to_add;
-    } else if (rgb == 'g') {
-        colour_array[1] = colour_array[1] + value_to_add;
-    } else if (rgb == 'b') {
-        colour_array[2] = colour_array[2] + value_to_add;
-    } else {
-        colour_array = colour_array.map( function(x) { return(x + value_to_add) } );
-    };
-    return(ROT.Color.toRGB(colour_array));
+function pauseComp(ms) {
+    ms += new Date().getTime();
+    while (new Date() < ms){}
 };
-
-// ------------- LATIN MARKOV CHAINS -----------------
-
