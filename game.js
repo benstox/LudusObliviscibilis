@@ -64,6 +64,7 @@ var Game = {
         this.beesrampu = new BeesRampu(0, 0);
         // this.james = new James(20, 20); //teleporting guy
         this.wormigee = new Wormigee(0, 17);
+        this.acolyte = new Acolyte(35, 4);
         this.fov = new ROT.FOV.PreciseShadowcasting( function(x, y) {
             if (isThisOnMap(x, y)) {
                 return Game.map.list[x][y].transparent;

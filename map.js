@@ -68,16 +68,18 @@ var Map = function(tile_for_floor, tile_for_wall) {
             };
         };
     };
-
     
     //this function will calculate all the tiles
     //of the map lit by a light source
     this.calculateLitAreas = function() {
+        // get a list of all the "flicker items", plus any scheduled beings with a light source equipped 
+        var all_light_sources = that.flicker_items.concat(
+            Game.scheduler._repeat.filter(function(x) {return(x.equippedLightSource());}));
         that.lit_tiles = {};
-        for (var i = 0; i < that.flicker_items.length; i++) {
+        for (var i = 0; i < all_light_sources.length; i++) {
             //add all tiles within the light source's radius to the map's list of lit tiles
             Game.fov.compute(
-                that.flicker_items[i].x, that.flicker_items[i].y, that.flicker_items[i].light_radius,
+                all_light_sources[i].x, all_light_sources[i].y, all_light_sources[i].light_radius || all_light_sources[i].getLightRadius(),
                 function(x, y, r, transparency) {
                     if (isThisOnMap(x, y)) {
                         that.lit_tiles[x + '_' + y] = true;
@@ -86,6 +88,17 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 }
             );
         };
+    };
+
+    this.redrawAreaWithinRadius = function(x, y, r) {
+        Game.fov.compute(
+            x, y, r,
+            function(x, y, r, transparency) {
+                if (isThisOnMap(x, y)) {
+                    that.list[x][y].draw();
+                };
+            }
+        );
     };
 };
 

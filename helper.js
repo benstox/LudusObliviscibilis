@@ -217,6 +217,14 @@ var flicker = function(i) {
 
 // ------------------- MAP -------------------
 
+//get Euclidean distance between two points
+var getEuclid = function(x1, y1, x2, y2) {
+    var dx = x1 - x2;
+    var dy = y1 - y2;
+    var euclid = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    return(euclid);
+};
+
 //check if coordinates are on the map/screen/thing
 var isThisOnMap = function(x, y) {
     if (x >= 0 &&

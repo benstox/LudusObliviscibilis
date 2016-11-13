@@ -16,7 +16,12 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, e
     if (this.blocks) {
         Game.map.list[this.x][this.y].blocked = true;
     };
-    Game.map.list[this.x][this.y].items.push(this);
+
+    if (this.x != null && this.y != null) {
+        // only push it to a tile's list of items if there is an x and y provided
+        // otherwise we can assume that it is in someone's inventory
+        Game.map.list[this.x][this.y].items.push(this);
+    };
     
     this.draw = function() {
         if (Game.map.list[that.x][that.y].isThisLit()) {
@@ -29,16 +34,8 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, e
     };
     
     this.redrawAreaWithinLightRadius = function() {
-        Game.fov.compute(
-            that.x, that.y, that.light_radius,
-            function(x, y, r, transparency) {
-                if (isThisOnMap(x, y)) {
-                    Game.map.list[x][y].draw();
-                };
-            }
-        );
+        Game.map.redrawAreaWithinRadius(that.x, that.y, that.light_radius);
     };
-    
 };
 
 //an item that can be picked up
@@ -50,14 +47,20 @@ var Ruby = function(x, y) {
     InventoryItem.apply(this, ['ruby', 'rubies', 'gem', 'red', x, y, true, true]);
 };
 
+
+
 var Torch = function(x, y) {
     InventoryItem.apply(this, ['torch', 'torches', 'fatdot', 'yellow', x, y, false, true]);
     
     this.light_giving = true;
     this.hidden_behind_message = false;
     this.light_radius = 8;
-    
-    Game.map.flicker_items.push(this);
+
+    if (this.x != null && this.y != null) {
+        // only push it to the map's list of "flicker_items" if there is an x and y provided
+        // otherwise we can assume that it is in someone's inventory
+        Game.map.flicker_items.push(this);
+    };
 };
 
 //an item that cannot be picked up, it might block the square or it might not
