@@ -20,9 +20,33 @@ var Tile = function(ch, col, col_dark, bg, bg_dark, x, y, walkable, transparent)
     this.colvar = 10;
     //this.colvar = 0;
 };
-    
-//find out if this tile is lit by a light sourceTile.prototype.isThisLit = function() {    return(this.x + '_' + this.y in Game.map.lit_tiles);};
-//draw the tileTile.prototype.draw = function() {    if (this.being) {        //DRAW THE BEING (top priority)        this.being.draw();    } else if (0 < this.items.length) {//this checks if there are any items in array        //DRAW THE ITEM        this.items[this.items.length - 1].draw();    } else {        //DRAW THE TILE        if (this.isThisLit()) {            //the tile is lit, draw its normal colours            Game.display.draw(this.x, this.y, this.ch, this.col, this.bg);        } else {            //the tile is in darkness, draw its darkened colours            Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);        };    };};
+    
+
+//find out if this tile is lit by a light source
+Tile.prototype.isThisLit = function() {
+    return(this.x + '_' + this.y in Game.map.lit_tiles);
+};
+
+
+//draw the tile
+Tile.prototype.draw = function() {
+    if (this.being) {
+        //DRAW THE BEING (top priority)
+        this.being.draw();
+    } else if (0 < this.items.length) {//this checks if there are any items in array
+        //DRAW THE ITEM
+        this.items[this.items.length - 1].draw();
+    } else {
+        //DRAW THE TILE
+        if (this.isThisLit()) {
+            //the tile is lit, draw its normal colours
+            Game.display.draw(this.x, this.y, this.ch, this.col, this.bg);
+        } else {
+            //the tile is in darkness, draw its darkened colours
+            Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);
+        };
+    };
+};
 
 
 // FLOOR TILES
@@ -98,11 +122,11 @@ RLMessageFloor.prototype = Object.create(RLFloorTile.prototype);
 RLMessageFloor.prototype.constructor = RLMessageFloor;
 
 
-var FloorTomb = function(x, y, message, material) {
+var FloorTomb = function(x, y, message, material, social_class) {
     CaveFloor.apply(this, [x, y]);
     this.ch = '0';
     this.material = material || null;
-    this.grave = new Grave(1, material);
+    this.grave = new Grave(1, material, "floor", social_class);
     this.message = message || this.grave.inscription;
     if(this.grave.material.nom == 'marmor') {
         this.stand_out = 3 * this.stand_out;
@@ -174,8 +198,25 @@ var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
 DoorTile.prototype = Object.create(Tile.prototype);
 DoorTile.prototype.constructor = DoorTile;
 
-DoorTile.prototype.open = function() {    this.ch = '/';    this.walkable = true;    this.transparent = true;    this.closed = false;    //opening a door could change the lighting    Game.map.calculateLitAreas();};
-DoorTile.prototype.close = function() {    this.ch = '+';    this.walkable = false;    this.transparent = false;    this.closed = true;    //closing a door could change the lighting    Game.map.calculateLitAreas();};
+
+DoorTile.prototype.open = function() {
+    this.ch = '/';
+    this.walkable = true;
+    this.transparent = true;
+    this.closed = false;
+    //opening a door could change the lighting
+    Game.map.calculateLitAreas();
+};
+
+
+DoorTile.prototype.close = function() {
+    this.ch = '+';
+    this.walkable = false;
+    this.transparent = false;
+    this.closed = true;
+    //closing a door could change the lighting
+    Game.map.calculateLitAreas();
+};
 
 
 //a door tile that starts closed, brown with black background

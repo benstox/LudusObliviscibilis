@@ -30,7 +30,7 @@ NationName.prototype = Object.create(GraveName.prototype);
 NationName.prototype.constructor = NationName;
 
 
-var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate, hasBrother, surname) {
+var GravePerson = function(grave, sex, name, spouse, lord, social_class, occupation, deathDate, hasBrother, surname) {
     this.grave = grave || null;
     this.sex = sex || randChoice(['male', 'female']);
     this.name = name || new GraveName(this.sex);
@@ -38,9 +38,14 @@ var GravePerson = function(grave, sex, name, spouse, lord, occupation, deathDate
     this.lord = lord;
     if (this.lord === undefined) {
         var lord_sex = randChoice(['male', 'female']);
-        this.lord = new GravePerson( null, lord_sex, new GraveName(lord_sex), null, null, getRoyalOccupation(lord_sex) );
+        this.lord = new GravePerson( null, lord_sex, new GraveName(lord_sex), null, null, null, getRoyalOccupation(lord_sex) );
     };
-    this.occupation = occupation || getRandomOccupation(this);
+    this.social_class = social_class || null;
+    if (this.social_class) {
+        this.occupation = getClassOccupation(this.sex, social_class);
+    } else {
+        this.occupation = occupation || getRandomOccupation(this);
+    };
     this.deathDate = new GraveDeathDate(deathDate) || new GraveDeathDate( randInt(800, 1534) );
     this.hasBrother = hasBrother || false;
     this.surname = surname || null;
@@ -125,12 +130,20 @@ var getRandomOccupation = function(person) {
 
 
 var getRoyalOccupation = function(sex) {
-    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['social_class'] == "monarch";}));
+    return( randChoice(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['social_class'] == "monarch";})) );
 };
 
 
 var getNonCelibateOccupation = function(sex) {
-    return(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['celibate'] == false;}));
+    return( randChoice(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['celibate'] == false;})) );
+};
+
+var getClassOccupation = function(sex, social_class) {
+    return( randChoice(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['social_class'] == social_class;})) );
+};
+
+var getNotClassOccupation = function(sex, social_class) {
+    return( randChoice(GRAVE_OCCUPATIONS[sex].filter(function(x){return x['social_class'] != social_class;})) );
 };
 
     
@@ -158,6 +171,8 @@ var GRAVE_OCCUPATIONS = {
     ],
     'female': [
         {'nom': 'uxor', 'gen': 'uxoris', 'hasSpouse': 'gen', 'social_class': 'commoner'},
+        {'nom': 'comitessa', 'gen': 'comitessae', 'social_class': 'aristocrat'},
+        {'nom': 'ducissa', 'gen': 'ducissae', 'social_class': 'aristocrat'},
         {'nom': 'abbatissa', 'gen': 'abbatissae', 'celibate': true, 'hasMonastery': true, 'social_class': 'ecclesiastic'},
         {'nom': 'monialis', 'gen': 'monialis', 'celibate': true, 'hasMonastery': true, 'social_class': 'ecclesiastic'},
         {'nom': 'regina', 'gen': 'reginae', 'dat': 'reginae', 'hasPeople': true, 'social_class': 'monarch'},
@@ -186,6 +201,9 @@ var TOMBS = [
     {'nom': 'tumulus', 'gen': 'tumuli', 'abl': 'tumulo', 'gender': 'm'},
     {'nom': 'monumentum', 'gen': 'monumenti', 'abl': 'monumento', 'gender': 'n'}
 ];
+
+
+var SOCIAL_CLASSES = [];
 
 
 var GraveIncipit = function(material, occupants) {
@@ -254,12 +272,13 @@ var GraveIncipit = function(material, occupants) {
 };
 
 
-var Grave = function(deceasedNumber, material, structure) {
+var Grave = function(deceasedNumber, material, structure, social_class) {
     this.occupants = []; // will hold the Person objects
     this.deceasedNumber = deceasedNumber || 1;
     this.nation = Game.nation;
     this.material = material || randChoice(MATERIALS);
     this.structure = structure || randChoice(['floor', 'monument']);
+    this.social_class = social_class || null;
     
     if (this.deceasedNumber >= 2) {
         this.couple = true;
@@ -270,14 +289,14 @@ var Grave = function(deceasedNumber, material, structure) {
     for(var i=0; i < this.deceasedNumber; i++) {
         if (i == 0 && this.couple == true) {
             // the husband
-            this.occupants.push(new GravePerson(this, 'male', null, null, getNonCelibateOccupation('male')));
+            this.occupants.push(new GravePerson(this, 'male', null, null, undefined, this.social_class, getNonCelibateOccupation('male')));
         } else if (i == 1 && this.couple == true) {
             // the wife
-            this.occupants.push(new GravePerson(this, 'female', null, this.occupants[0], getNonCelibateOccupation('female')));
+            this.occupants.push(new GravePerson(this, 'female', null, this.occupants[0], undefined, this.social_class, getNonCelibateOccupation('female')));
             this.occupants[0].spouse = this.occupants[1];
         } else {
             // unmarried
-            this.occupants.push(new GravePerson(this));
+            this.occupants.push(new GravePerson(this, randChoice(["male", "female"]), null, null, undefined, this.social_class));
         };
     };
     

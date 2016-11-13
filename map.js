@@ -205,11 +205,17 @@ var Map_LargeRoomInCentre = function() {
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 3, wall_start_y+7+3 )
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 6, wall_start_y+7+3 )
 
-        var arthur_message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
+        // var arthur_message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
         var marble = MATERIALS[1];
-        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, arthur_message, marble );
-        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
-        that.set_tile( wall_start_x + 3, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
-        that.set_tile( wall_start_x + 5, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb );
+        // that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, arthur_message, marble );
+        that.set_tile( wall_start_x + -3, wall_start_y + Math.floor(Game.screen_height / 10) + 2, FloorTomb, null, null, "commoner" );
+        that.set_tile( wall_start_x + -3, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, null, null, "commoner" );
+        that.set_tile( wall_start_x + -1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, null, null, "commoner" );
+        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, null, marble, "monarch" );
+        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 2, FloorTomb, null, marble, "royal" );
+        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 4, FloorTomb, null, marble, "aristocrat" );
+        that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
+        that.set_tile( wall_start_x + 3, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
+        that.set_tile( wall_start_x + 5, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
     };
 };

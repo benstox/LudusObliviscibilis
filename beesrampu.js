@@ -63,7 +63,7 @@ Wormigee.prototype.act = function() {
 
 
 var Acolyte = function(x, y) {
-    Being.apply(this, ['Acolyte', '@', 'grey', x, y]);
+    Being.apply(this, ['Acolyte', '@', '#200c30', x, y]);
     this.starting_location = [x, y];
     this.equipment["right hand"] = new Torch();
     Game.scheduler.add(this, true);
