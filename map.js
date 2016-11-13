@@ -83,7 +83,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 function(x, y, r, transparency) {
                     if (isThisOnMap(x, y)) {
                         that.lit_tiles[x + '_' + y] = true;
-                        Game.map.list[x][y].draw();
+                        that.list[x][y].draw();
                     };
                 }
             );
@@ -91,14 +91,15 @@ var Map = function(tile_for_floor, tile_for_wall) {
     };
 
     this.redrawAreaWithinRadius = function(x, y, r) {
-        Game.fov.compute(
-            x, y, r,
-            function(x, y, r, transparency) {
-                if (isThisOnMap(x, y)) {
-                    that.list[x][y].draw();
+        for (var i = 0; i < ((r*2) + 1); i++) {
+            for (var j = 0; j < ((r*2) + 1); j++) {
+                var tile_x = x - r + i;
+                var tile_y = y - r + j;
+                if (isThisOnMap(tile_x, tile_y)) {
+                    that.list[tile_x][tile_y].draw();
                 };
-            }
-        );
+            };
+        };
     };
 };
 
