@@ -71,6 +71,28 @@ RLFloorTile.prototype = Object.create(FloorTile.prototype);
 RLFloorTile.prototype.constructor = RLFloorTile;
 
 
+var GrassFloor = function(x, y) {
+    RLFloorTile.apply(this, [x, y]);
+    
+    var r = 40 + randInt(-this.colvar, this.colvar);
+    var g = 125 + randInt(-this.colvar, this.colvar);
+    var b = 40 + randInt(-this.colvar, this.colvar);
+    
+    this.ch = ' ';
+
+    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
+
+    //amount that any characters drawn on the tile will stand out by
+    this.stand_out = 30;
+    this.stand_out_dark = 10;
+    this.col = addRGBToColour(this.bg, this.stand_out);
+    this.col_dark = addRGBToColour(this.bg_dark, this.stand_out_dark);
+};
+GrassFloor.prototype = Object.create(RLFloorTile.prototype);
+GrassFloor.prototype.constructor = GrassFloor;
+
+
 var CaveFloor = function(x, y) {
     RLFloorTile.apply(this, [x, y]);
     

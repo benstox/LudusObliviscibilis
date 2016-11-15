@@ -16,41 +16,59 @@ var Map = function(tile_for_floor, tile_for_wall) {
         };
     };
     
-    //set tile to be at coordinates
+    // set tile to be at coordinates
     this.set_tile = function(x, y, tile) {
-        //any number of arguments can now be passed to the tile
+        // any number of arguments can now be passed to the tile
         var extra_args = [];
         for (var i = 0; i < arguments.length; i++) {
             if (i > 2) {
                 extra_args.push(arguments[i]);
             };
         };
-        //some ugly javascript that passes the arguments properly
+        // some ugly javascript that passes the arguments properly
         that.list[x][y] = new (Function.prototype.bind.apply( tile, [null, x, y].concat(extra_args) ));
     };
 
-    //set a verticle line to be all some tile (create a wall where x = constant)
+    // set a verticle line to be all some tile (create a wall where x = constant)
     this.set_v_line = function(x, y0, wall_length, tile, extra_arg) {
         for (var i = y0; i < y0 + wall_length; i++) {
             that.set_tile(x, i, tile, extra_arg);
         };
     };
 
-    //set a horizontal line to be all some tile (create a wall where y = constant)
+    // set a horizontal line to be all some tile (create a wall where y = constant)
     this.set_h_line = function(x0, y, wall_length, tile, extra_arg) {
         for (var i = x0; i < x0 + wall_length; i++) {
             that.set_tile(i, y, tile, extra_arg);
         };
     };
 
-    //set a rectangular area to be all some tile
+    // set a rectangular area to be all some tile
     this.set_rectangle = function(x, y, w, h, tile, extra_arg) {
         for (var i = 0; i < w; i++) {
             that.set_v_line( x+i, y, h, tile , extra_arg );
         };
     };
+
+    // set tiles within a verticle line to be randomly converted to some other tile;
+    // 0 < chance < 1
+    this.set_v_line_randomly = function(x, y0, wall_length, tile, chance, extra_arg) {
+        for (var i = y0; i < y0 + wall_length; i++) {
+            if (Math.random() < chance) {
+                that.set_tile(x, i, tile, extra_arg);
+            };
+        };
+    };
+
+    // set tiles within a rectangular area to be randomly converted to some other tile;
+    // 0 < chance < 1
+    this.set_rectangle_randomly = function(x, y, w, h, tile, chance, extra_arg) {
+        for (var i = 0; i < w; i++) {
+            that.set_v_line_randomly( x+i, y, h, tile , chance, extra_arg );
+        };
+    };
     
-    //draw the map
+    // draw the map
     this.draw = function() {
         for (var j = 0; j < that.height; j++) {
             for(var i = 0; i < that.width; i++) {
@@ -165,32 +183,44 @@ var Map_RandomRLWallTiles = function() {
     };
 };
 
-//Map with a large room in centre
+// Map with a large room in centre
 var Map_LargeRoomInCentre = function() {
     var that = this;
-    var plan = 
-    Map.apply(this, [CaveFloor, CaveWall]);
-    //this.createMap();
+    Map.apply(this, [GrassFloor, CaveWall]);
+    // this.createMap();
     
     this.createMap = function() {
         var wall_start_y = Math.floor( 2 * Game.screen_height / 5 );
         var wall_start_x = Math.floor( Game.screen_width / 3 );
+        var east_wall_x = wall_start_x+Math.floor( Game.screen_width / 2 );
+        var wall_w = east_wall_x - wall_start_x + 1;
         var throne_x = wall_start_x+Math.floor( Game.screen_width / 2 ) - 1;
         var throne_y = wall_start_y-3;
 
-        that.set_v_line( wall_start_x, wall_start_y, 7, CaveWall ); //wall with brazier next to it
-        that.set_v_line( wall_start_x, wall_start_y+7+1, 3, CaveWall ); //short section to bottom left corner
-        that.set_h_line( wall_start_x, wall_start_y+7+4, Math.floor( Game.screen_width / 2 ), CaveWall ); //long section east from bottom left corner
-        that.set_tile( wall_start_x, wall_start_y-1, CaveDoorTile ); //doors
-        that.set_tile( wall_start_x, wall_start_y-2, CaveDoorTile ); //doors
-        that.set_tile( wall_start_x, wall_start_y-3, CaveDoorTile, true ); //doors, start open
-        that.set_tile( wall_start_x, wall_start_y-5, CaveDoorTile ); //doors
-        that.set_v_line( wall_start_x, 3, wall_start_y-5-3, CaveWall ); //vertical part at top left corner
-        that.set_h_line( wall_start_x, 3, Math.floor( Game.screen_width / 4 ), CaveWall ); //horizontal part at top left corner
-        that.set_v_line( wall_start_x+Math.floor( Game.screen_width / 2 ), 3 , wall_start_y+7+5-3, CaveWall ); //east wall
-        that.set_h_line( wall_start_x+Math.floor( Game.screen_width / 2 )-7, 3, 4, CaveWall ); //isolated bit on north wall
+        // interior floor
+        that.set_rectangle(wall_start_x, 3, wall_w, wall_start_y+7+5-3, CaveFloor);
 
-        //decorated floor around throne
+        // walls
+        that.set_v_line( wall_start_x, wall_start_y, 7, CaveWall ); // wall with brazier next to it
+        that.set_v_line( wall_start_x, wall_start_y+7+1, 3, CaveWall ); // short section to bottom left corner
+        that.set_h_line( wall_start_x, wall_start_y+7+4, wall_w, CaveWall ); // long section east from bottom left corner
+        that.set_tile( wall_start_x, wall_start_y-1, CaveDoorTile ); // doors
+        that.set_tile( wall_start_x, wall_start_y-2, CaveDoorTile ); // doors
+        that.set_tile( wall_start_x, throne_y, CaveDoorTile, true ); // doors, start open
+        that.set_tile( wall_start_x, wall_start_y-5, CaveDoorTile ); // doors
+        that.set_v_line( wall_start_x, 3, wall_start_y-5-3, CaveWall ); // vertical part at top left corner
+        that.set_h_line( wall_start_x, 3, Math.floor( Game.screen_width / 4 ), CaveWall ); // horizontal part at top left corner
+        that.set_v_line( east_wall_x, 3 , wall_start_y+7+5-3, CaveWall ); // east wall
+        that.set_h_line( east_wall_x-7, 3, 4, CaveWall ); // isolated bit on north wall
+
+        // path
+        var path_start_x = Math.floor(wall_start_x/2);
+        that.set_rectangle_randomly(path_start_x, throne_y-2, wall_start_x-path_start_x, 5, CaveFloor, 0.5);
+        for (var i = 0; i < path_start_x; i++) {
+            that.set_v_line_randomly(i, throne_y-2+path_start_x-i, 5, CaveFloor, 0.5);
+        };
+
+        // decorated floor around throne
         that.set_rectangle( throne_x-1, throne_y-4, 2, 9, CaveFloorHiero );
         that.set_v_line( throne_x-2, throne_y-4, 9, CaveFloorSpecialChar, 'single_v' );
         that.set_h_line( throne_x-1, throne_y-5, 2, CaveFloorSpecialChar, 'single_h' );
@@ -198,6 +228,7 @@ var Map_LargeRoomInCentre = function() {
         that.set_tile( throne_x-2, throne_y-5, CaveFloorSpecialChar, 'single_corner_tl' );
         that.set_tile( throne_x-2, throne_y+5, CaveFloorSpecialChar, 'single_corner_bl' );
 
+        // items, furniture
         new Brazier( wall_start_x+Math.floor( Game.screen_width / 2 ) - 1, wall_start_y );
         new Brazier( wall_start_x+Math.floor( Game.screen_width / 2 ) - 1, wall_start_y-6 );
         new Torch( 15, 14 )
@@ -205,6 +236,7 @@ var Map_LargeRoomInCentre = function() {
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 3, wall_start_y+7+3 )
         new Ruby( wall_start_x+Math.floor( Game.screen_width / 4 ) + 6, wall_start_y+7+3 )
 
+        // tombs
         // var arthur_message = 'An inscription reads, "Hic jacet Arthurus rex Britannorum cujus animae propitietur Deus. Amen."';
         var marble = MATERIALS[1];
         // that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10), FloorTomb, arthur_message, marble );
