@@ -19,8 +19,8 @@ $(document).ready(function () {
         var mousePos = getMousePos(canvas, evt);
         var tile_x = Math.floor(mousePos.x/Game.display_options.tileWidth);
         var tile_y = Math.floor(mousePos.y/Game.display_options.tileHeight);
-        var tile_name = capitalizeFirstLetter(Game.map.list[tile_x][tile_y].display_name);
-        var message = tile_name + ': (' + tile_x + ', ' + tile_y + ')';
+        var tile = Game.map.list[tile_x][tile_y];
+        var message = tile.getDisplayString();
         writeMessage(canvas, message);
     }, false);
 });

@@ -29,6 +29,22 @@ Tile.prototype.isThisLit = function() {
 };
 
 
+// string to display for this tile in the mouseover
+Tile.prototype.getDisplayString = function() {
+    var tile_name = capitalizeFirstLetter(this.display_name);
+    var coords = "(" + this.x + ", " + this.y + ")";
+    if (this.being) {
+        var being = this.being.name;
+    } else {
+        var being = null;
+    };
+    var display_string = coords + " " + tile_name + ".";
+    if (being) {
+        display_string += " " + capitalizeFirstLetter(being) + " is here.";
+    };
+    return(display_string);
+};
+
 // draw the tile
 Tile.prototype.draw = function() {
     if (this.being) {
