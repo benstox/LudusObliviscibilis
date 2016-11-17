@@ -29,6 +29,14 @@ var startsWithVowel = function(word) {
 
 // ------------------- MARKOV AND ARRAYS OF STRINGS -------------------
 
+var getArrayItemCounts = function(arr) {
+    // get counts of the different items in an array
+    var counts = arr.reduce(function (acc, curr) {
+        acc[curr] ? acc[curr]++ : acc[curr] = 1; return acc;
+    }, {});
+    return(counts);
+};
+
 var getWordsFromText = function(text) {
     // split a text into an array of words
     var words = text.split(" ");

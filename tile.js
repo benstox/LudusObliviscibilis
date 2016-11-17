@@ -30,6 +30,7 @@ Tile.prototype.isThisLit = function() {
 
 // get a sentence saying what items are here on this tile
 Tile.prototype.getDisplayItems = function() {
+    var item_counts = getArrayItemCounts(this.items);
     var articled = this.items.map(function(x) {
         if (startsWithVowel(x.name)) {
             return("an " + x.name);
