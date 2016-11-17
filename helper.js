@@ -18,6 +18,15 @@ var separateLetters = function(words) {
     return(words);
 };
 
+var startsWithVowel = function(word) {
+    // does this word start with a vowel (English)
+    var vowels = ["a", "e", "i", "o", "u"];
+    return(vowels.some(
+        function (element, index, array) {
+            return(word.startsWith(element));
+    }));
+};
+
 // ------------------- MARKOV AND ARRAYS OF STRINGS -------------------
 
 var getWordsFromText = function(text) {

@@ -28,20 +28,39 @@ Tile.prototype.isThisLit = function() {
     return(this.x + '_' + this.y in Game.map.lit_tiles);
 };
 
+// get a sentence saying what items are here on this tile
+Tile.prototype.getDisplayItems = function() {
+    var articled = this.items.map(function(x) {
+        if (startsWithVowel(x.name)) {
+            return("an " + x.name);
+        } else {
+            return("a " + x.name);
+        };
+    });
+
+    if (articled.length == 0) {
+        return("");
+    } else if (articled.length == 1) {
+        return(capitalizeFirstLetter(articled[0]) + " is here.");
+    } else {
+        var last_item = articled.pop();
+        var joined = articled.join(", ") + " and " + last_item + " are here.";
+        return(capitalizeFirstLetter(joined));
+    };
+};
 
 // string to display for this tile in the mouseover
 Tile.prototype.getDisplayString = function() {
-    var tile_name = capitalizeFirstLetter(this.display_name);
+    var tile_name = capitalizeFirstLetter(this.display_name) + ".";
     var coords = "(" + this.x + ", " + this.y + ")";
+    var display = [coords, tile_name];
     if (this.being) {
-        var being = this.being.name;
-    } else {
-        var being = null;
+        display.push(capitalizeFirstLetter(this.being.name) + " is here.");
     };
-    var display_string = coords + " " + tile_name + ".";
-    if (being) {
-        display_string += " " + capitalizeFirstLetter(being) + " is here.";
+    if (this.items.length != 0) {
+        display.push(this.getDisplayItems());
     };
+    var display_string = display.join(" ");
     return(display_string);
 };
 
