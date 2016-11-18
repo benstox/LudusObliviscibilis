@@ -30,18 +30,27 @@ Tile.prototype.isThisLit = function() {
 
 // get a sentence saying what items are here on this tile
 Tile.prototype.getDisplayItems = function() {
-    var item_counts = getArrayItemCounts(this.items);
-    var articled = this.items.map(function(x) {
-        if (startsWithVowel(x.name)) {
-            return("an " + x.name);
+    var item_counts = getArrayItemCounts(this.items.map(function(x) {return([x.name, x.plural])}));
+    var articled = Object.keys(item_counts).map(function(x) {
+        if (item_counts[x] == 1 && startsWithVowel(x)) {
+            // singular
+            var quantity = "an";
+            var name = x.split(",")[0];
+        } else if (item_counts[x] == 1) {
+            // singular
+            var quantity = "a";
+            var name = x.split(",")[0];
         } else {
-            return("a " + x.name);
+            // plural
+            var quantity = item_counts[x];
+            var name = x.split(",")[1];
         };
+        return(quantity + " " + name);
     });
 
-    if (articled.length == 0) {
+    if (this.items.length == 0) {
         return("");
-    } else if (articled.length == 1) {
+    } else if (this.items.length == 1) {
         return(capitalizeFirstLetter(articled[0]) + " is here.");
     } else {
         var last_item = articled.pop();
