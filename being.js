@@ -23,8 +23,14 @@ Being.prototype.draw = function() {
     if (Game.map.list[this.x][this.y].isThisLit()) {
         // the tile is lit so give the being the tile's normal background
         Game.display.draw(this.x, this.y, this.ch, this.col, Game.map.list[this.x][this.y].bg);
-    } else {
+    } else if (this == Game.player) {
         // the tile is in darkness so give the being the tile's darkened background
+        Game.display.draw(this.x, this.y, this.ch, this.col, Game.map.list[this.x][this.y].bg_dark);
+    } else if (Game.map.list[this.x][this.y].explored == false){
+        // the tile is unexplored so keep it black
+        Game.display.draw(this.x, this.y, " ", this.col, "black");
+    } else {
+        // the tile is explored but not lit
         Game.display.draw(this.x, this.y, this.ch, this.col, Game.map.list[this.x][this.y].bg_dark);
     };
 };
