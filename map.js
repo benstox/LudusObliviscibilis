@@ -72,7 +72,6 @@ var Map = function(tile_for_floor, tile_for_wall) {
     this.draw = function() {
         for (var j = 0; j < that.height; j++) {
             for(var i = 0; i < that.width; i++) {
-                //Game.display.draw(i, j, that.list[i][j].ch, that.list[i][j].col, that.list[i][j].bg);
                 that.list[i][j].draw();
             };
         };
@@ -101,11 +100,24 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 function(x, y, r, transparency) {
                     if (isThisOnMap(x, y)) {
                         that.lit_tiles[x + '_' + y] = true;
-                        that.list[x][y].draw();
                     };
                 }
             );
         };
+        // draw and explore tiles in player's field of vision (Game.player.vision_radius)
+        Game.fov.compute(Game.player.x, Game.player.y, Game.player.vision_radius, function(x, y, r, transparency) {
+            if (isThisOnMap(x, y)) {
+                that.list[x][y].explored = true;
+                that.list[x][y].draw();
+            };
+        });
+        // draw and explore lit tiles in player's line of sight
+        Game.fov.compute(Game.player.x, Game.player.y, 50, function(x, y, r, transparency) {
+            if (isThisOnMap(x, y) && that.list[x][y].isThisLit()) {
+                that.list[x][y].explored = true;
+                that.list[x][y].draw();
+            };
+        });
     };
 
     this.redrawAreaWithinRadius = function(x, y, r) {
@@ -115,6 +127,18 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 var tile_y = y - r + j;
                 if (isThisOnMap(tile_x, tile_y)) {
                     that.list[tile_x][tile_y].draw();
+                };
+            };
+        };
+    };
+
+    this.exploreAreaWithinRadius = function(x, y, r) {
+        for (var i = 0; i < ((r*2) + 1); i++) {
+            for (var j = 0; j < ((r*2) + 1); j++) {
+                var tile_x = x - r + i;
+                var tile_y = y - r + j;
+                if (isThisOnMap(tile_x, tile_y)) {
+                    that.list[tile_x][tile_y].explored = true;
                 };
             };
         };

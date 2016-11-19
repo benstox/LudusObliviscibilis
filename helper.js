@@ -218,7 +218,6 @@ var addRGBToColour = function(colour_string, value_to_add, rgb) {
 var flicker = function(i) {
     //This is the colour generator I used in my python rl:
     //libtcod.Color(255, 153+libtcod.random_get_int(0,-150, 100), 0)
-    //console.log('flicker' + i);
     for (var h = 0; h < Game.map.flicker_items.length; h++) {
         var x = Game.map.flicker_items[h].x;
         var y = Game.map.flicker_items[h].y;

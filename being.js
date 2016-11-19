@@ -6,7 +6,7 @@ var Being = function(name, ch, col, x, y, vision_radius) {
     this.ch = ch;
     this.x = x;
     this.y = y;
-    this.vision_radius = vision_radius || 5;
+    this.vision_radius = vision_radius || 8;
     this.equipment = {};
     Game.map.list[this.x][this.y].being = this;
     Game.map.list[this.x][this.y].blocked = true;
@@ -239,7 +239,7 @@ Being.prototype.move = function(dx, dy) {
             this.draw(); // draw new position
             // tell the new tile that the being is now present
             Game.map.list[this.x][this.y].being = this;
-            // tell the new tiel that it is now blocked
+            // tell the new tile that it is now blocked
             Game.map.list[this.x][this.y].blocked = true;
             // record the being's last move
             this.last_move = [dx, dy];

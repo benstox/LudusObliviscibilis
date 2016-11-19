@@ -45,9 +45,11 @@ var Game = {
             height: this.screen_height
         };
         
+        // exploring on?
+        this.explore = true;
         // the display
         this.display = new ROT.Display(this.display_options);
-        document.body.appendChild(this.display.getContainer());
+        $("#canvas").html(this.display.getContainer());
         
         // something
         this.scheduler = new ROT.Scheduler.Simple();
@@ -73,22 +75,23 @@ var Game = {
             };
         } );
         
-        // initialise the list of tiles lit by a light source
-        this.map.calculateLitAreas();
         
         this.engine = new ROT.Engine(this.scheduler);
         this.engine.start();
+
+        // initialise the list of tiles lit by a light source
+        this.map.calculateLitAreas();
+        this.map.draw();
         
         for (var flickid = 0; flickid < 3; flickid++) {
             this['flicker' + flickid] = setInterval( flicker, randInt(1000, 3000), flickid );
         };
         
         // start the map off
-        setTimeout(this.map.draw, 1000);
+        // setTimeout(this.map.calculateLitAreas(), 1000);
         // this.map.draw();
         // console.log('Map drawn');
     }
 };
-
 
 Game.main();

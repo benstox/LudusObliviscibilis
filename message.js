@@ -10,7 +10,6 @@ var Message = function(text, x, y, w, h) {
     this.y = y;
     this.w = w;
     this.h = h;
-    //console.log(this.x, this.y, this.w, this.h)
     
     //when something triggers the popup message do this:
     this.trigger = function() {
@@ -33,7 +32,6 @@ var Message = function(text, x, y, w, h) {
                 Game.map.flicker_items[i].hidden_behind_message = true;
             };
         };
-        //console.log('triggered')
     };
     
     //redraw just the area hidden by the message
