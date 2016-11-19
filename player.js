@@ -7,6 +7,7 @@ var Player = function(x, y) {
     // the player has two equipment slots
     this.equipment['left hand'] = null;
     this.equipment['right hand'] = null;
+    this.vision_radius = 1;
     
     // handler below does different things depending on mode of this
     this.handler_mode = 'game';

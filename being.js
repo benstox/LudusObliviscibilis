@@ -6,7 +6,7 @@ var Being = function(name, ch, col, x, y, vision_radius) {
     this.ch = ch;
     this.x = x;
     this.y = y;
-    this.vision_radius = vision_radius || 5;
+    this.vision_radius = vision_radius || 8;
     this.equipment = {};
     Game.map.list[this.x][this.y].being = this;
     Game.map.list[this.x][this.y].blocked = true;
@@ -248,6 +248,9 @@ Being.prototype.move = function(dx, dy) {
                 Game.map.calculateLitAreas();
                 var radius = this.getLightRadius();
                 Game.map.redrawAreaWithinRadius(this.x, this.y, radius+1);
+            } else if (this == Game.player) {
+                // always do this for the player, even if not carrying light source
+                Game.map.calculateLitAreas();
             };
             // if this was the player then a turn was completed
             // so unlock the engine and let other actors have a turn:   
