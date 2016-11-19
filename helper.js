@@ -1,6 +1,6 @@
 // ------------------- STRING FUNCTIONS -------------------
 
-//Capitalize only first letter of a string
+// Capitalize only first letter of a string
 var capitalizeFirstLetter = function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -137,8 +137,8 @@ var makeLatinName = function (gender, min_length, max_length) {
 
 // ------------------- DISPLAY -------------------
 
-//create a tilemap for terminalglyphs12x12_alpha.png
-//basically a dictionary that provides a 'key' for each character in the map
+// create a tilemap for terminalglyphs12x12_alpha.png
+// basically a dictionary that provides a 'key' for each character in the map
 var createTileMap = function() {
     tileMap = {
                 " ": [0, 0],
@@ -156,32 +156,32 @@ var createTileMap = function() {
     var lowercase1 = "abcdefghijklmno";
     var lowercase2 = "pqrstuvwxyz";
     var punctu = "#$%&'()*+,-./";
-    //digits
+    // digits
     for (var i = 0; i < digits.length; i++) {
         tileMap[digits[i]] = [12*i, 12*3];
     };
-    //capitals1
+    // capitals1
     for (var i = 0; i < capitals1.length; i++) {
         tileMap[capitals1[i]] = [12*(i+1), 12*4];
     };
-    //capitals2
+    // capitals2
     for (var i = 0; i < capitals2.length; i++) {
         tileMap[capitals2[i]] = [12*i, 12*5];
     };
-    //lowercase1
+    // lowercase1
     for (var i = 0; i < lowercase1.length; i++) {
         tileMap[lowercase1[i]] = [12*(i+1), 12*6];
     };
-    //lowercase2
+    // lowercase2
     for (var i = 0; i < lowercase2.length; i++) {
         tileMap[lowercase2[i]] = [12*i, 12*7];
     };
-    //some punctuation
+    // some punctuation
     for (var i = 0; i < punctu.length; i++) {
         tileMap[punctu[i]] = [12*(i+3), 12*2];
     };
 
-    //get all the hieroglyphics
+    // get all the hieroglyphics
     for (var j = 0; j < 16; j++) {
         for (var i = 0; i < 16; i++) {
             var serialno = i + j*16;
@@ -189,7 +189,7 @@ var createTileMap = function() {
         };
     };
 
-    //get single lines
+    // get single lines
     tileMap['single_v'] = [12*3, 12*11]; //straight vertical
     tileMap['single_corner_tr'] = [12*15, 12*11]; //top right corner
     tileMap['single_corner_bl'] = [0, 12*12]; //bottom left corner
@@ -200,7 +200,7 @@ var createTileMap = function() {
     return(tileMap);
 };
 
-//add a certain rgb value to a colour
+// add a certain rgb value to a colour
 var addRGBToColour = function(colour_string, value_to_add, rgb) {
     var colour_array = ROT.Color.fromString(colour_string);
     if (rgb == 'r') {
@@ -216,16 +216,14 @@ var addRGBToColour = function(colour_string, value_to_add, rgb) {
 };
 
 var flicker = function(i) {
-    //This is the colour generator I used in my python rl:
-    //libtcod.Color(255, 153+libtcod.random_get_int(0,-150, 100), 0)
-    //console.log('flicker' + i);
+    // This is the colour generator I used in my python rl:
+    // libtcod.Color(255, 153+libtcod.random_get_int(0,-150, 100), 0)
     for (var h = 0; h < Game.map.flicker_items.length; h++) {
         var x = Game.map.flicker_items[h].x;
         var y = Game.map.flicker_items[h].y;
         var g = randInt(3, 253);
-        //Game.map.flicker_items[h].col = ROT.Color.toHex( ROT.Color.interpolate([255, 255, 0], [255, 0, 0], ROT.RNG.getUniform()) );
+
         Game.map.flicker_items[h].col = ROT.Color.toHex( [255, g, 0] );
-        //console.log(Game.map.flicker_items[h].col);
         if (Game.map.flicker_items[h].hidden_behind_message == false) {
             Game.map.list[x][y].draw();
         };
@@ -234,7 +232,7 @@ var flicker = function(i) {
 
 // ------------------- MAP -------------------
 
-//get Euclidean distance between two points
+// get Euclidean distance between two points
 var getEuclid = function(x1, y1, x2, y2) {
     var dx = x1 - x2;
     var dy = y1 - y2;
@@ -242,7 +240,7 @@ var getEuclid = function(x1, y1, x2, y2) {
     return(euclid);
 };
 
-//check if coordinates are on the map/screen/thing
+// check if coordinates are on the map/screen/thing
 var isThisOnMap = function(x, y) {
     if (x >= 0 &&
         x < Game.screen_width &&
@@ -254,8 +252,8 @@ var isThisOnMap = function(x, y) {
         };
 };
 
-//check if the tile under coordinates is walkable
-//i.e. is walkable and not blocked
+// check if the tile under coordinates is walkable
+// i.e. is walkable and not blocked
 var isThisWalkable = function(x, y) {
     if (Game.map.list[x][y].walkable && !Game.map.list[x][y].blocked) {
         return true;
@@ -266,9 +264,9 @@ var isThisWalkable = function(x, y) {
 
 // ------------------- RANDOM NUMBERS -------------------
 
-//get a random integer
-//randInt(1) can only return 0
-//randInt(2) can return 0 or 1
+// get a random integer
+// randInt(1) can only return 0
+// randInt(2) can return 0 or 1
 var randInt = function(number1, number2) {
     number2 = number2 || 0;
     if (number1 == number2) {
@@ -282,7 +280,7 @@ var randInt = function(number1, number2) {
     };
     var diff = great - less;
     return less + Math.floor(ROT.RNG.getUniform() * diff);
-    //return less + Math.floor(Math.random()*diff); //DEBUG
+    // return less + Math.floor(Math.random()*diff); // DEBUG
 };
 
 var randChoice = function(choice_list) {
@@ -294,13 +292,13 @@ var randChoice = function(choice_list) {
 
 var numberToRoman = function(num) {
     roman = "";
-    //figure out the thousands first
+    // figure out the thousands first
     thousands = Math.floor(num / 1000);
     for (var i = 0; i < thousands; i++) {
         roman = roman + "m";
     };
     num = num - thousands * 1000;
-    //figure out the hundreds
+    // figure out the hundreds
     hundreds = Math.floor(num / 100);
     if (hundreds == 9) {
         roman = roman + "cm";
@@ -317,7 +315,7 @@ var numberToRoman = function(num) {
         };
     };
     num = num - hundreds * 100;
-    //figure out the tens
+    // figure out the tens
     tens = Math.floor(num / 10);
     if (tens == 9) {
         roman = roman + "xc";
@@ -334,7 +332,7 @@ var numberToRoman = function(num) {
         };
     };
     num = num - tens * 10;
-    //figure out the ones
+    // figure out the ones
     if (num == 9) {
         roman = roman + "ix";
     } else if (num >= 5) {

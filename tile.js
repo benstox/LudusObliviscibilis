@@ -282,7 +282,9 @@ DoorTile.prototype.open = function() {
     this.transparent = true;
     this.closed = false;
     //opening a door could change the lighting
-    Game.map.calculateLitAreas();
+    if (Game.fov) {
+        Game.map.calculateLitAreas();
+    };
 };
 
 
@@ -293,7 +295,9 @@ DoorTile.prototype.close = function() {
     this.transparent = false;
     this.closed = true;
     //closing a door could change the lighting
-    Game.map.calculateLitAreas();
+    if (Game.fov) {
+        Game.map.calculateLitAreas();
+    };
 };
 
 

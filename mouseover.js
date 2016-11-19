@@ -12,7 +12,7 @@ function getMousePos(canvas, evt) {
 };
 
 $(document).ready(function () { 
-    var canvas = $('body > canvas')[0];
+    var canvas = $('#canvas > canvas')[0];
     var context = canvas.getContext('2d');
 
     canvas.addEventListener('mousemove', function(evt) {

@@ -47,7 +47,7 @@ var Game = {
         
         // the display
         this.display = new ROT.Display(this.display_options);
-        document.body.appendChild(this.display.getContainer());
+        $("#canvas").html(this.display.getContainer());
         
         // something
         this.scheduler = new ROT.Scheduler.Simple();
@@ -82,13 +82,11 @@ var Game = {
         for (var flickid = 0; flickid < 3; flickid++) {
             this['flicker' + flickid] = setInterval( flicker, randInt(1000, 3000), flickid );
         };
-        
+
         // start the map off
-        setTimeout(this.map.draw, 1000);
-        // this.map.draw();
-        // console.log('Map drawn');
+        // for some reason if I try this.map.draw here without the timeout it doesn't work;
+        setTimeout(this.map.draw, 0); // timeout of 0 ms does though!
     }
 };
-
 
 Game.main();
