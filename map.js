@@ -72,7 +72,6 @@ var Map = function(tile_for_floor, tile_for_wall) {
     this.draw = function() {
         for (var j = 0; j < that.height; j++) {
             for(var i = 0; i < that.width; i++) {
-                //Game.display.draw(i, j, that.list[i][j].ch, that.list[i][j].col, that.list[i][j].bg);
                 that.list[i][j].draw();
             };
         };
@@ -105,11 +104,14 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 }
             );
         };
+        // let's also keep a list of all the visible tiles
+        var visible_tiles = {};
         // draw and explore tiles in player's field of vision (Game.player.vision_radius)
         Game.fov.compute(Game.player.x, Game.player.y, Game.player.vision_radius, function(x, y, r, transparency) {
             if (isThisOnMap(x, y)) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
+                visible_tiles[x + "_" + y] = true;
             };
         });
         // draw and explore lit tiles in player's line of sight
@@ -117,8 +119,18 @@ var Map = function(tile_for_floor, tile_for_wall) {
             if (isThisOnMap(x, y) && that.list[x][y].isThisLit()) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
+                visible_tiles[x + "_" + y] = true;
             };
         });
+        // draw the tiles that aren't visible!
+        // return(this.x + '_' + this.y in Game.map.lit_tiles);
+        for (var i = 0; i < that.width; i++) {
+            for (var j = 0; j < that.height; j++) {
+                if (i + "_" + j in visible_tiles == false) {
+                    that.list[i][j].drawNotVisible();
+                };
+            };
+        };
     };
 
     this.redrawAreaWithinRadius = function(x, y, r) {
@@ -134,26 +146,26 @@ var Map = function(tile_for_floor, tile_for_wall) {
     };
 };
 
-//Map with some random wall tiles, old roguelike tiles '#', etc
+// Map with some random wall tiles, old roguelike tiles '#', etc
 var Map_RandomRLWallTiles = function() {
     var that = this;
     Map.apply(this, [RLFloorTile, RLWallTile]);
     
-    //initialise the map
+    // initialise the map
     this.createMap = function() {
-        //create a floor tile map with some random walls in it
+        // create a floor tile map with some random walls in it
         for(var i = 0; i < that.width; i++) {
             that.list.push([]);
             for (var j = 0; j < that.height; j++) {
-                //put a floor tile in each square
+                // put a floor tile in each square
                 if (randInt(10) === 0) {
                     that.list[i].push(new RLWallTile(i, j));
-                } else { //but sometimes put a wall
+                } else { // but sometimes put a wall
                     that.list[i].push(new RLFloorTile(i, j));
                 };
             };
         };
-        //build a little house
+        // build a little house
         var house_corner_x = 20 + randInt(20);
         var house_corner_y = 5 + randInt(5);
         for (var i = 0; i < 8; i++) {
@@ -170,7 +182,7 @@ var Map_RandomRLWallTiles = function() {
             };
             that.set_tile(house_corner_x + 7, j + house_corner_y, RLWallTile);
         };
-        //put a ruby or two in the house, plus a torch and a loose tile
+        // put a ruby or two in the house, plus a torch and a loose tile
         for (var i = 0; i < 4; i++) {
             rubyx = randInt(6);
             rubyy = randInt(6);
@@ -184,11 +196,11 @@ var Map_RandomRLWallTiles = function() {
                 };
             };
         };
-        //put a brazier in the top left corner
+        // put a brazier in the top left corner
         if (isThisWalkable(house_corner_x + 1, house_corner_y + 1)) {
             new Brazier(house_corner_x + 1, house_corner_y + 1);
         };
-        //put a throne in the bottom right corner
+        // put a throne in the bottom right corner
         if (isThisWalkable(house_corner_x + 6, house_corner_y + 6)) {
             new Ruby(house_corner_x + 6, house_corner_y + 6);
             new Throne(house_corner_x + 6, house_corner_y + 6);

@@ -81,18 +81,28 @@ Tile.prototype.draw = function() {
         if (this.being) {
             // DRAW THE BEING (top priority)
             this.being.draw();
+        } else if (0 < this.items.length) {// this checks if there are any items in array
+            // DRAW THE ITEM
+            this.items[this.items.length - 1].draw();
         } else if (this.isThisLit()) {
             // the tile is lit, draw its normal colours
-            if (0 < this.items.length) {// this checks if there are any items in array
-                // DRAW THE ITEM
-                this.items[this.items.length - 1].draw();
-            } else {
-                Game.display.draw(this.x, this.y, this.ch, this.col, this.bg);
-            };
+            Game.display.draw(this.x, this.y, this.ch, this.col, this.bg);
         } else {
             // the tile is in darkness, draw its darkened colours
             Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);
         };
+    } else {
+        // the tile is unexplored!
+        Game.display.draw(this.x, this.y, " ", "white", "black");
+    };
+};
+
+
+// draw the tile that is not visible
+Tile.prototype.drawNotVisible = function() {
+    if (this.explored || Game.explore == false) {
+        // the tile is in darkness, draw its darkened colours
+        Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);
     } else {
         // the tile is unexplored!
         Game.display.draw(this.x, this.y, " ", "white", "black");

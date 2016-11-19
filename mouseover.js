@@ -1,4 +1,4 @@
-
+// Creates the mouseover display, when the mouse moves over the game map
 function writeMessage(canvas, message) {
     $("#game-messages").text(message);
 };

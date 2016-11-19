@@ -201,7 +201,9 @@ Being.prototype.teleport = function(x, y) {
         this.erase();
         this.x = x;
         this.y = y;
-        this.draw();
+        if (this == Game.player) {
+            this.draw();
+        };
         // tell the new tile that the being is now present
         Game.map.list[x][y].being = this;
         // tell the new tile that it is now blocked

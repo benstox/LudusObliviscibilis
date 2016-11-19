@@ -20,6 +20,7 @@ var Game = {
     
     main: function() {
         this.first_turn = true;
+        this.explore = true;
         // load the image for the tileset
         this.tileset = document.createElement("img");
         this.tileset.src = "terminalglyphs12x12_alpha.png";
