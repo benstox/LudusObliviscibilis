@@ -1,17 +1,17 @@
-//Map of just floor tiles
+// Map of just floor tiles
 var Map = function(tile_for_floor, tile_for_wall) {
     var that = this;
     this.width = Game.screen_width;
     this.height = Game.screen_height;
-    this.list = []; //this is the array of tiles on the map
-    this.flicker_items = []; //the map keeps track of any items that give off light
-    this.lit_tiles = {}; //the map keeps track of any lit tiles
+    this.list = []; // this is the array of tiles on the map
+    this.flicker_items = []; // the map keeps track of any items that give off light
+    this.lit_tiles = {}; // the map keeps track of any lit tiles
 
-    //initialise the map
+    // initialise the map
     for(var i = 0; i < this.width; i++) {
         this.list.push([]);
         for (var j = 0; j < this.height; j++) {
-            //put a floor tile in each square
+            // put a floor tile in each square
             this.list[i].push(new tile_for_floor(i, j));
         };
     };
@@ -78,7 +78,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
         };
     };
     
-    //redraw an area
+    // redraw an area
     this.redraw = function(x, y, w, h) {
         for (var j = 0; j < h; j++) {
             for (var i = 0; i < w; i++) {
@@ -86,26 +86,39 @@ var Map = function(tile_for_floor, tile_for_wall) {
             };
         };
     };
-    
-    //this function will calculate all the tiles
-    //of the map lit by a light source
+
+    // this function will calculate all the tiles
+    // of the map lit by a light source
     this.calculateLitAreas = function() {
         // get a list of all the "flicker items", plus any scheduled beings with a light source equipped 
         var all_light_sources = that.flicker_items.concat(
             Game.scheduler._repeat.filter(function(x) {return(x.equippedLightSource());}));
         that.lit_tiles = {};
         for (var i = 0; i < all_light_sources.length; i++) {
-            //add all tiles within the light source's radius to the map's list of lit tiles
+            // add all tiles within the light source's radius to the map's list of lit tiles
             Game.fov.compute(
                 all_light_sources[i].x, all_light_sources[i].y, all_light_sources[i].light_radius || all_light_sources[i].getLightRadius(),
                 function(x, y, r, transparency) {
                     if (isThisOnMap(x, y)) {
                         that.lit_tiles[x + '_' + y] = true;
-                        that.list[x][y].draw();
                     };
                 }
             );
         };
+        // draw and explore tiles in player's field of vision (Game.player.vision_radius)
+        Game.fov.compute(Game.player.x, Game.player.y, Game.player.vision_radius, function(x, y, r, transparency) {
+            if (isThisOnMap(x, y)) {
+                that.list[x][y].explored = true;
+                that.list[x][y].draw();
+            };
+        });
+        // draw and explore lit tiles in player's line of sight
+        Game.fov.compute(Game.player.x, Game.player.y, 50, function(x, y, r, transparency) {
+            if (isThisOnMap(x, y) && that.list[x][y].isThisLit()) {
+                that.list[x][y].explored = true;
+                that.list[x][y].draw();
+            };
+        });
     };
 
     this.redrawAreaWithinRadius = function(x, y, r) {

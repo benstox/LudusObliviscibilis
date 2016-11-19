@@ -144,7 +144,7 @@ GrassFloor.prototype.constructor = GrassFloor;
 var CaveFloor = function(x, y) {
     RLFloorTile.apply(this, [x, y]);
     
-    var colour = 100; //180 in python rl
+    var colour = 100; // 180 in python rl
     var r = colour + randInt(-this.colvar, this.colvar);
     var g = colour + randInt(-this.colvar, this.colvar);
     var b = colour + randInt(-this.colvar, this.colvar);
@@ -155,7 +155,7 @@ var CaveFloor = function(x, y) {
     this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
 
-    //amount that any characters drawn on the tile will stand out by
+    // amount that any characters drawn on the tile will stand out by
     this.stand_out = 30;
     this.stand_out_dark = 10;
     this.col = addRGBToColour(this.bg, this.stand_out);
@@ -225,7 +225,7 @@ WallTile.prototype.constructor = WallTile;
 
 
 var RLWallTile = function(x, y) {
-    //rgb(24, 24, 24) = #181818
+    // rgb(24, 24, 24) = #181818
     WallTile.apply(this, ['#', 'rgb(255, 255, 255)',
                                'rgb(127, 127, 127)',
                                'rgb(24, 24, 24)',
@@ -240,12 +240,12 @@ var CaveWall = function(x, y) {
     
     this.display_name = "a stone wall";
 
-    var colour = 180; //110 in python rl
+    var colour = 180; // 110 in python rl
     var r = colour + randInt(-this.colvar, this.colvar);
     var g = colour + randInt(-this.colvar, this.colvar);
     var b = colour + randInt(-this.colvar, this.colvar);
                                
-    //this.ch = ' ';
+    // this.ch = ' ';
     this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
     this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
@@ -258,7 +258,7 @@ CaveWall.prototype.constructor = CaveWall;
 // DOOR TILES
 
 
-//a door tile that starts closed
+// a door tile that starts closed
 var DoorTile = function(ch, col, col_dark, bg, bg_dark, x, y, startopen) {
     Tile.apply(this, [ch, col, col_dark, bg, bg_dark, x, y, false, false]);
     
@@ -281,7 +281,7 @@ DoorTile.prototype.open = function() {
     this.walkable = true;
     this.transparent = true;
     this.closed = false;
-    //opening a door could change the lighting
+    // opening a door could change the lighting
     if (Game.fov) {
         Game.map.calculateLitAreas();
     };
@@ -294,14 +294,14 @@ DoorTile.prototype.close = function() {
     this.walkable = false;
     this.transparent = false;
     this.closed = true;
-    //closing a door could change the lighting
+    // closing a door could change the lighting
     if (Game.fov) {
         Game.map.calculateLitAreas();
     };
 };
 
 
-//a door tile that starts closed, brown with black background
+// a door tile that starts closed, brown with black background
 var RLDoorTile = function(x, y, startopen) {
     DoorTile.apply(this, ['+',
                       'rgb(165, 42, 42)',
@@ -316,7 +316,7 @@ RLDoorTile.prototype.constructor = RLDoorTile;
 var CaveDoorTile = function(x, y, startopen) {
     RLDoorTile.apply(this, [x, y, startopen]);
 
-    var colour = 100; //180 in python rl
+    var colour = 100; // 180 in python rl
     var r = colour + randInt(-this.colvar, this.colvar);
     var g = colour + randInt(-this.colvar, this.colvar);
     var b = colour + randInt(-this.colvar, this.colvar);
