@@ -12,6 +12,7 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, e
     this.equipment = equipment; //can go into a player's equipment slot
     this.light_giving = false;
     this.light_radius = null;
+    this.in_line_of_sight = false; // is it in player's line of sight? needed to get correct background for torches that are known but not currently visible
     
     if (this.blocks) {
         Game.map.list[this.x][this.y].blocked = true;

@@ -112,6 +112,9 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
                 visible_tiles[x + "_" + y] = true;
+                // check for any torches etc
+                // if there are any set in_line_of_sight property to true
+                // then the correct backgrount (light/dark) can be drawn for them
             };
         });
         // draw and explore lit tiles in player's line of sight
@@ -120,6 +123,10 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
                 visible_tiles[x + "_" + y] = true;
+                // check for any torches etc
+                // if there are any set in_line_of_sight property to true
+                // then the correct backgrount (light/dark) can be drawn for them
+                var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
             };
         });
         // draw the tiles that aren't visible!
@@ -128,6 +135,10 @@ var Map = function(tile_for_floor, tile_for_wall) {
             for (var j = 0; j < that.height; j++) {
                 if (i + "_" + j in visible_tiles == false) {
                     that.list[i][j].drawNotVisible();
+                    // check for any torches etc
+                    // if there are any set in_line_of_sight property to false
+                    // then the correct backgrount (light/dark) can be drawn for them
+                    var light_giving = that.list[i][j].items.filter(function(z) {return(z.light_giving);});
                 };
             };
         };
@@ -140,6 +151,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 var tile_y = y - r + j;
                 if (isThisOnMap(tile_x, tile_y)) {
                     that.list[tile_x][tile_y].draw();
+                    var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
                 };
             };
         };
