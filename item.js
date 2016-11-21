@@ -26,8 +26,13 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, e
     
     this.draw = function() {
         if (Game.map.list[that.x][that.y].isThisLit()) {
-            //the tile is lit so give the item the tile's normal background
-            Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+            // special case for flickering items:
+            if (that.light_giving && that.in_line_of_sight == false) {
+                Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg_dark);     
+            } else {
+                //the tile is lit so give the item the tile's normal background
+                Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg);
+            };
         } else {
             //the tile is in darkness so give the item the tile's darkened background
             Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg_dark);

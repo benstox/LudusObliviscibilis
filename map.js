@@ -114,7 +114,11 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 visible_tiles[x + "_" + y] = true;
                 // check for any torches etc
                 // if there are any set in_line_of_sight property to true
-                // then the correct backgrount (light/dark) can be drawn for them
+                // then the correct background (light/dark) can be drawn for them
+                var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
+                light_giving.forEach(function(part, index, theArray) {
+                    theArray[index].in_line_of_sight = true;
+                });
             };
         });
         // draw and explore lit tiles in player's line of sight
@@ -125,8 +129,11 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 visible_tiles[x + "_" + y] = true;
                 // check for any torches etc
                 // if there are any set in_line_of_sight property to true
-                // then the correct backgrount (light/dark) can be drawn for them
+                // then the correct background (light/dark) can be drawn for them
                 var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
+                light_giving.forEach(function(part, index, theArray) {
+                    theArray[index].in_line_of_sight = true;
+                });
             };
         });
         // draw the tiles that aren't visible!
@@ -137,8 +144,11 @@ var Map = function(tile_for_floor, tile_for_wall) {
                     that.list[i][j].drawNotVisible();
                     // check for any torches etc
                     // if there are any set in_line_of_sight property to false
-                    // then the correct backgrount (light/dark) can be drawn for them
+                    // then the correct background (light/dark) can be drawn for them
                     var light_giving = that.list[i][j].items.filter(function(z) {return(z.light_giving);});
+                    light_giving.forEach(function(part, index, theArray) {
+                        theArray[index].in_line_of_sight = false;
+                    });
                 };
             };
         };
