@@ -240,29 +240,23 @@ Being.prototype.move = function(dx, dy) {
             Game.map.list[this.x][this.y].being = null;
             // unblock the tile
             Game.map.list[this.x][this.y].blocked = false;
-            // draw what was underneath you at that square (i.e. erase you, or draw what remains after you've gone)
-            this.erase(); 
-            this.x = this.x + dx; // adjust the being's position
+
+            // adjust the being's position
+            this.x = this.x + dx;
             this.y = this.y + dy;
-            this.draw(); // draw new position
+
             // tell the new tile that the being is now present
             Game.map.list[this.x][this.y].being = this;
             // tell the new tiel that it is now blocked
             Game.map.list[this.x][this.y].blocked = true;
             // record the being's last move
             this.last_move = [dx, dy];
-            // redraw light radius
-            if (this.equippedLightSource()) {
+
+            if (this == Game.player) {
+                // always redraw for the player, even if not carrying light source
                 Game.map.calculateLitAreas();
-                var radius = this.getLightRadius();
-                Game.map.redrawAreaWithinRadius(this.x, this.y, radius+1);
-            } else if (this == Game.player) {
-                // always do this for the player, even if not carrying light source
-                Game.map.calculateLitAreas();
-            };
-            // if this was the player then a turn was completed
-            // so unlock the engine and let other actors have a turn:   
-            if (this instanceof Player) {
+                // if this was the player then a turn was completed
+                // so unlock the engine and let other actors have a turn:   
                 Game.engine.unlock();
             };
         };

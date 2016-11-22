@@ -74,6 +74,7 @@ Player.prototype.handleEvent = function(e) {
         } else if (code == ROT.VK_PERIOD) {
             // wait
             this.last_move = 'waited';
+            Game.map.calculateLitAreas();
             Game.engine.unlock();
         } else if (code == ROT.VK_G) {
             // pick up item from tile
