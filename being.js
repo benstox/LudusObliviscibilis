@@ -26,7 +26,7 @@ Being.prototype.draw = function() {
     } else if (this == Game.player) {
         // the tile is in darkness so give the being the tile's darkened background
         Game.display.draw(this.x, this.y, this.ch, this.col, Game.map.list[this.x][this.y].bg_dark);
-    } else if (Game.map.list[this.x][this.y].explored == false){
+    } else if (Game.map.list[this.x][this.y].explored == false && Game.explore){
         // the tile is unexplored so keep it black
         Game.display.draw(this.x, this.y, " ", this.col, "black");
     } else {
@@ -230,9 +230,9 @@ Being.prototype.move = function(dx, dy) {
             Game.map.list[this.x + dx][this.y + dy].draw();
             // set the being's last move to 'opened door'
             this.last_move = 'opened door';
-            // unlock the engine for the player
-            if (this instanceof Player) {
-                Game.engine.unlock();
+            // unlock the engine for the player, etc.
+            if (this == Game.player) {
+                endPlayerTurn();
             };
         // check whether it's a valid move, and if so move there
         } else if (isThisWalkable(this.x + dx, this.y + dy)) {
@@ -253,11 +253,7 @@ Being.prototype.move = function(dx, dy) {
             this.last_move = [dx, dy];
 
             if (this == Game.player) {
-                // always redraw for the player, even if not carrying light source
-                Game.map.calculateLitAreas();
-                // if this was the player then a turn was completed
-                // so unlock the engine and let other actors have a turn:   
-                Game.engine.unlock();
+                endPlayerTurn();
             };
         };
     };

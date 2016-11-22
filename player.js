@@ -22,6 +22,8 @@ Player.prototype.act = function() {
         
     // stops going through the list of actors (things who get a turn)
     Game.engine.lock();
+
+    Game.map.calculateLitAreas();
         
     // console.log(this.last_move);
     // check if the player's tile has a popup message on it
@@ -74,8 +76,7 @@ Player.prototype.handleEvent = function(e) {
         } else if (code == ROT.VK_PERIOD) {
             // wait
             this.last_move = 'waited';
-            Game.map.calculateLitAreas();
-            Game.engine.unlock();
+            endPlayerTurn();
         } else if (code == ROT.VK_G) {
             // pick up item from tile
             this.pickup();
@@ -101,4 +102,9 @@ Player.prototype.handleEvent = function(e) {
         this.handler_mode = 'game';
         window.addEventListener('keydown', this);
     };
+};
+
+var endPlayerTurn = function() {
+    Game.map.calculateLitAreas();
+    Game.engine.unlock();
 };

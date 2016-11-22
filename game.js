@@ -86,7 +86,7 @@ var Game = {
 
         // start the map off
         // for some reason if I try this.map.draw here without the timeout it doesn't work;
-        setTimeout(this.map.draw, 0); // timeout of 0 ms does though!
+        setTimeout(this.map.calculateLitAreas, 0); // timeout of 0 ms does though!
     }
 };
 

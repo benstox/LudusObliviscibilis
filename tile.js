@@ -102,7 +102,11 @@ Tile.prototype.draw = function() {
 Tile.prototype.drawNotVisible = function() {
     if (this.explored || Game.explore == false) {
         // the tile is in darkness, draw its darkened colours
-        Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);
+        if (this.items.length > 0) {
+            this.items[this.items.length - 1].draw();
+        } else {
+            Game.display.draw(this.x, this.y, this.ch, this.col_dark, this.bg_dark);
+        };
     } else {
         // the tile is unexplored!
         Game.display.draw(this.x, this.y, " ", "white", "black");

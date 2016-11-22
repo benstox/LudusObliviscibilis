@@ -112,11 +112,9 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
                 visible_tiles[x + "_" + y] = true;
-                // check for any torches etc
-                // if there are any set in_line_of_sight property to true
+                // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
-                var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
-                light_giving.forEach(function(part, index, theArray) {
+                that.list[x][y].items.forEach(function(part, index, theArray) {
                     theArray[index].in_line_of_sight = true;
                 });
             };
@@ -127,11 +125,9 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 that.list[x][y].explored = true;
                 that.list[x][y].draw();
                 visible_tiles[x + "_" + y] = true;
-                // check for any torches etc
-                // if there are any set in_line_of_sight property to true
+                // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
-                var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
-                light_giving.forEach(function(part, index, theArray) {
+                that.list[x][y].items.forEach(function(part, index, theArray) {
                     theArray[index].in_line_of_sight = true;
                 });
             };
@@ -142,11 +138,9 @@ var Map = function(tile_for_floor, tile_for_wall) {
             for (var j = 0; j < that.height; j++) {
                 if (i + "_" + j in visible_tiles == false) {
                     that.list[i][j].drawNotVisible();
-                    // check for any torches etc
-                    // if there are any set in_line_of_sight property to false
+                    // if there are any items set in_line_of_sight property to true
                     // then the correct background (light/dark) can be drawn for them
-                    var light_giving = that.list[i][j].items.filter(function(z) {return(z.light_giving);});
-                    light_giving.forEach(function(part, index, theArray) {
+                    that.list[i][j].items.forEach(function(part, index, theArray) {
                         theArray[index].in_line_of_sight = false;
                     });
                 };
@@ -234,7 +228,6 @@ var Map_RandomRLWallTiles = function() {
 var Map_LargeRoomInCentre = function() {
     var that = this;
     Map.apply(this, [GrassFloor, CaveWall]);
-    // this.createMap();
     
     this.createMap = function() {
         var wall_start_y = Math.floor( 2 * Game.screen_height / 5 );

@@ -27,7 +27,7 @@ var Item = function(name, plural, ch, col, x, y, blocks, pickupable, pursable, e
     this.draw = function() {
         if (Game.map.list[that.x][that.y].isThisLit()) {
             // special case for flickering items:
-            if (that.light_giving && that.in_line_of_sight == false) {
+            if (that.in_line_of_sight == false) {
                 Game.display.draw(that.x, that.y, that.ch, that.col, Game.map.list[that.x][that.y].bg_dark);     
             } else {
                 //the tile is lit so give the item the tile's normal background
@@ -52,8 +52,6 @@ var InventoryItem = function(name, plural, ch, col, x, y, pursable, equipment) {
 var Ruby = function(x, y) {
     InventoryItem.apply(this, ['ruby', 'rubies', 'gem', 'red', x, y, true, true]);
 };
-
-
 
 var Torch = function(x, y) {
     InventoryItem.apply(this, ['torch', 'torches', 'fatdot', 'yellow', x, y, false, true]);
