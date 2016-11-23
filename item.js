@@ -58,7 +58,7 @@ var Torch = function(x, y) {
     
     this.light_giving = true;
     this.hidden_behind_message = false;
-    this.light_radius = 8;
+    this.light_radius = 5;
 
     if (this.x != null && this.y != null) {
         // only push it to the map's list of "flicker_items" if there is an x and y provided
@@ -77,7 +77,7 @@ var Brazier = function(x, y) {
     
     this.light_giving = true;
     this.hidden_behind_message = false;
-    this.light_radius = 8;
+    this.light_radius = 5;
     
     Game.map.flicker_items.push(this);
 };

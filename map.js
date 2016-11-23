@@ -114,7 +114,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 visible_tiles[x + "_" + y] = true;
                 // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
-                that.list[x][y].items.forEach(function(part, index, theArray) {
+                _.forEach(that.list[x][y].items, function(part, index, theArray) {
                     theArray[index].in_line_of_sight = true;
                 });
             };
@@ -127,7 +127,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 visible_tiles[x + "_" + y] = true;
                 // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
-                that.list[x][y].items.forEach(function(part, index, theArray) {
+                _.forEach(that.list[x][y].items, function(part, index, theArray) {
                     theArray[index].in_line_of_sight = true;
                 });
             };
@@ -140,7 +140,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                     that.list[i][j].drawNotVisible();
                     // if there are any items set in_line_of_sight property to true
                     // then the correct background (light/dark) can be drawn for them
-                    that.list[i][j].items.forEach(function(part, index, theArray) {
+                    _.forEach(that.list[i][j].items, function(part, index, theArray) {
                         theArray[index].in_line_of_sight = false;
                     });
                 };
