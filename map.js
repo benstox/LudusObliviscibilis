@@ -115,7 +115,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
                 _.forEach(that.list[x][y].items, function(part, index, theArray) {
-                    theArray[index].in_line_of_sight = true;
+                    _.set(theArray, index + ".in_line_of_sight", true);
                 });
             };
         });
@@ -128,24 +128,20 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 // if there are any items set in_line_of_sight property to true
                 // then the correct background (light/dark) can be drawn for them
                 _.forEach(that.list[x][y].items, function(part, index, theArray) {
-                    theArray[index].in_line_of_sight = true;
+                    _.set(theArray, index + ".in_line_of_sight", true);
                 });
             };
         });
         // draw the tiles that aren't visible!
         // return(this.x + '_' + this.y in Game.map.lit_tiles);
-        for (var i = 0; i < that.width; i++) {
-            for (var j = 0; j < that.height; j++) {
-                if (i + "_" + j in visible_tiles == false) {
-                    that.list[i][j].drawNotVisible();
-                    // if there are any items set in_line_of_sight property to true
-                    // then the correct background (light/dark) can be drawn for them
-                    _.forEach(that.list[i][j].items, function(part, index, theArray) {
-                        theArray[index].in_line_of_sight = false;
-                    });
-                };
+        _.forEach(that.list, (column) => {_.forEach(column, (tile) => {
+            if (tile.x + "_" + tile.y in visible_tiles == false) {
+                tile.drawNotVisible();
+                _.forEach(tile.items, function(part, index, theArray) {
+                    _.set(theArray, index + ".in_line_of_sight", false);
+                });
             };
-        };
+        })});
     };
 
     this.redrawAreaWithinRadius = function(x, y, r) {
