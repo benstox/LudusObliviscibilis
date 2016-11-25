@@ -121,7 +121,7 @@ Being.prototype.addToInventory = function(item, pickupable_item_index, inventory
 // the being picks up an item from his tile
 Being.prototype.pickup = function() {
     var last_item_i = Game.map.list[this.x][this.y].items.length;
-    var pickupable_items = Game.map.list[this.x][this.y].items.filter( function(x) { return(x.pickupable) } );
+    var pickupable_items = _.filter( Game.map.list[this.x][this.y].items, function(x) { return(x.pickupable) } );
     // check if there are any pickupable items
     if (pickupable_items.length > 0) {
         // find the index of the last pickupable item

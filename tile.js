@@ -30,8 +30,8 @@ Tile.prototype.isThisLit = function() {
 
 // get a sentence saying what items are here on this tile
 Tile.prototype.getDisplayItems = function() {
-    var item_counts = getArrayItemCounts(this.items.map(function(x) {return([x.name, x.plural])}));
-    var articled = Object.keys(item_counts).map(function(x) {
+    var item_counts = getArrayItemCounts(_.map(this.items, function(x) {return([x.name, x.plural])}));
+    var articled = _.map(Object.keys(item_counts), function(x) {
         if (item_counts[x] == 1 && startsWithVowel(x)) {
             // singular
             var quantity = "an";

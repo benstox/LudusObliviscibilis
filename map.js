@@ -91,7 +91,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
     this.calculateLitAreas = function() {
         // get a list of all the "flicker items", plus any scheduled beings with a light source equipped 
         var all_light_sources = that.flicker_items.concat(
-            Game.scheduler._repeat.filter(function(x) {return(x.equippedLightSource());}));
+            _.filter(Game.scheduler._repeat, function(x) {return(x.equippedLightSource());}));
         that.lit_tiles = {};
         for (var i = 0; i < all_light_sources.length; i++) {
             // add all tiles within the light source's radius to the map's list of lit tiles
@@ -151,7 +151,7 @@ var Map = function(tile_for_floor, tile_for_wall) {
                 var tile_y = y - r + j;
                 if (isThisOnMap(tile_x, tile_y)) {
                     that.list[tile_x][tile_y].draw();
-                    var light_giving = that.list[x][y].items.filter(function(z) {return(z.light_giving);});
+                    var light_giving = _.filter(that.list[x][y].items, function(z) {return(z.light_giving);});
                 };
             };
         };

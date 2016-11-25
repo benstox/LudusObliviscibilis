@@ -45,37 +45,37 @@ var getWordsFromText = function(text) {
 
 var getWordsStartingWith = function(words, starting) {
     // get only the words that start with a certain string from an array of words
-    words = words.filter(function (x) {return(x.startsWith(starting));});
+    words = _.filter(words, function (x) {return(x.startsWith(starting));});
     return(words);
 };
 
 var getWordsEndingWith = function(words, ending) {
     // get only the words that end with a certain string from an array of words
-    words = words.filter(function (x) {return(x.endsWith(ending));});
+    words = _.filter(words, function (x) {return(x.endsWith(ending));});
     return(words);
 };
 
 var getWordsNotEndingWith = function(words, ending) {
     // get only the words that don't end with a certain string from an array of words
-    words = words.filter(function (x) {return(!x.endsWith(ending));});
+    words = _.filter(words, function (x) {return(!x.endsWith(ending));});
     return(words);
 };
 
 var getWordsOfMinLength = function(words, min_length) {
     // get only the words of a certain minimum length from an array of words
-    words = words.filter(function (x) {return(x.length >= min_length);});
+    words = _.filter(words, function (x) {return(x.length >= min_length);});
     return(words);
 };
 
 var filterRomanNumerals = function(words) {
     // filter out roman numerals from the list of words
-    words = words.filter(function (x) {return(
+    words = _.filter(words, function (x) {return(
         !/^(?=[mdclxvi])m*(c[md]|d?c*)(x[cl]|l?x*)(i[xv]|v?i*)$/.test(x.toLowerCase()));});
     return(words);
 };
 
 var normalizeVariations = function(words, variation, ending) {
-    words = words.map(function(x) {return(x.replace(variation, ending))})
+    words = _.map(words, function(x) {return(x.replace(variation, ending))});
     return(words);
 };
 
@@ -210,7 +210,7 @@ var addRGBToColour = function(colour_string, value_to_add, rgb) {
     } else if (rgb == 'b') {
         colour_array[2] = colour_array[2] + value_to_add;
     } else {
-        colour_array = colour_array.map( function(x) { return(x + value_to_add) } );
+        colour_array = _.map( colour_array, function(x) { return(x + value_to_add) } );
     };
     return(ROT.Color.toRGB(colour_array));
 };
