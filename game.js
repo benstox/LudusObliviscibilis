@@ -1,25 +1,8 @@
 "use strict";
 
 var Game = {
-    tileset: null,
-    screen_width: null,
-    screen_height: null,
-    screen_spacing: null,
-    display_options: null,
-    display: null,
-    player: null,
-    scheduler: null,
-    flicker_scheduler: null,
-    engine: null,
-    flicker_engine: null,
-    beesrampu: null,
-    james: null,
-    map: null,
-    fov: null,
-    
-    
+   
     main: function() {
-        this.first_turn = true;
         this.explore = true;
         // load the image for the tileset
         this.tileset = document.createElement("img");

@@ -130,20 +130,20 @@ var getRandomOccupation = function(person) {
 
 
 var getRoyalOccupation = function(sex) {
-    return( _.filter(randChoice(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] == "monarch";})) );
+    return( randChoice(_.filter(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] == "monarch";})) );
 };
 
 
 var getNonCelibateOccupation = function(sex) {
-    return( _.filter(randChoice(GRAVE_OCCUPATIONS[sex], function(x){return x['celibate'] == false;})) );
+    return( randChoice(_.filter(GRAVE_OCCUPATIONS[sex], function(x){return x['celibate'] == false;})) );
 };
 
 var getClassOccupation = function(sex, social_class) {
-    return( _.filter(randChoice(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] == social_class;})) );
+    return( randChoice(_.filter(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] == social_class;})) );
 };
 
 var getNotClassOccupation = function(sex, social_class) {
-    return( _.filter(randChoice(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] != social_class;})) );
+    return( randChoice(_.filter(GRAVE_OCCUPATIONS[sex], function(x){return x['social_class'] != social_class;})) );
 };
 
     
