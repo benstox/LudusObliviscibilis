@@ -140,15 +140,12 @@ RLFloorTile.prototype.constructor = RLFloorTile;
 var GrassFloor = function(x, y) {
     RLFloorTile.apply(this, [x, y]);
     
-    var r = 40 + randInt(-this.colvar, this.colvar);
-    var g = 125 + randInt(-this.colvar, this.colvar);
-    var b = 40 + randInt(-this.colvar, this.colvar);
+    var colourMap = getGrassColour();
+    this.bg = colourMap["bg"];
+    this.bg_dark = colourMap["bg_dark"];
     
     this.display_name = "grass";
     this.ch = ' ';
-
-    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-    this.bg_dark = 'rgb(' + Math.floor(r/3) + ', ' + Math.floor(g/3) + ', ' + (Math.floor(b/3) + 20) + ')';
 
     // amount that any characters drawn on the tile will stand out by
     this.stand_out = 30;
@@ -272,6 +269,61 @@ var CaveWall = function(x, y) {
 };
 CaveWall.prototype = Object.create(RLWallTile.prototype);
 CaveWall.prototype.constructor = CaveWall;
+
+
+var TreeTrunk = function(x, y) {
+    RLWallTile.apply(this, [x, y]);
+    
+    this.display_name = "a tree";
+
+    // not this.colvar??
+    var r = 235 + randInt(-10, 10);
+    var g = 143 + randInt(-20, 20);
+    var b = 65 + randInt(-25, 25);
+
+    this.char = "tree_trunk";
+    this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
+    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    this.bg_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
+};
+TreeTrunk.prototype = Object.create(RLWallTile.prototype);
+TreeTrunk.prototype.constructor = TreeTrunk;
+
+
+var TreeLeaves = function(x, y, direction) {
+    TreeTrunk.apply(this, [x, y]);
+
+    // background
+    this.colvar = 5;
+    var r = 235 + randInt(-10, 10);
+    var g = 143 + randInt(-20, 20);
+    var b = 65 + randInt(-25, 25);
+
+    this.char = "tree_" + direction;
+    this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
+    this.bg = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    this.bg_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
+
+    // #setting the grass colour underneath
+    // r = 30 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // g = 200 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // b = 30 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // self.light_color = libtcod.Color(r, g, b)
+    // self.dark_color = libtcod.Color(r/2, g/2, b/2 + 40)
+    
+    // #setting the foliage colour
+    // self.colvar = 5
+    // self.r = 38 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // self.g = 110 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // self.b = 20 + libtcod.random_get_int(0,-self.colvar,self.colvar)
+    // self.char_colour_light = libtcod.Color(self.r, self.g, self.b)
+    // self.char_colour_dark = libtcod.Color(self.r/2, self.g/2, self.b/2)
+    // self.block_sight = False
+};
+TreeLeaves.prototype = Object.create(TreeTrunk.prototype);
+TreeLeaves.prototype.constructor = TreeLeaves;
 
 
 // DOOR TILES

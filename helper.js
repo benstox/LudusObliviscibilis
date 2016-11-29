@@ -197,6 +197,17 @@ var createTileMap = function() {
     tileMap['single_corner_br'] = [12*9, 12*13]; //bottom right corner
     tileMap['single_corner_tl'] = [12*10, 12*13]; //top left corner
 
+    // tree
+    tileMap['tree_nw'] = [12*4, 12*17];
+    tileMap['tree_n'] = [12*3, 12*17];
+    tileMap['tree_ne'] = [12*2, 12*17];
+    tileMap['tree_w'] = [12*5, 12*17];
+    tileMap['tree_trunk'] = [12*6, 12*17];
+    tileMap['tree_e'] = [12*1, 12*17];
+    tileMap['tree_sw'] = [12*14, 12*16];
+    tileMap['tree_s'] = [12*15, 12*16];
+    tileMap['tree_se'] = [12*0, 12*17];
+
     return(tileMap);
 };
 
