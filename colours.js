@@ -4,7 +4,7 @@ var getGrassColour = function() {
     var colourMap = {
         "r": 40 + randInt(-colvar, colvar),
         "g": 125 + randInt(-colvar, colvar),
-        "b": 40 + randInt(-this.colvar, this.colvar)
+        "b": 40 + randInt(-colvar, colvar)
     };
     colourMap["r_dark"] = Math.floor(colourMap["r"]/3);
     colourMap["g_dark"] = Math.floor(colourMap["g"]/3);
