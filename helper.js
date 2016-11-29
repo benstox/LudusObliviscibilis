@@ -243,6 +243,24 @@ var flicker = function(i) {
 
 // ------------------- MAP -------------------
 
+var getDirectionVector = function(direction) {
+    var directions = {
+        "nw": {"x": -1, "y": -1},
+        "n": {"x": 0, "y": -1},
+        "ne": {"x": 1, "y": -1},
+        "w": {"x": -1, "y": 0},
+        "e": {"x": 1, "y": 0},
+        "sw": {"x": -1, "y": 1},
+        "s": {"x": 0, "y": 1},
+        "se": {"x": 1, "y": 1},
+        "center": {"x": 0, "y": 0},
+        "middle": {"x": 0, "y": 0},
+        "c": {"x": 0, "y": 0},
+        "m": {"x": 0, "y": 0},
+    };
+    return(directions[direction]);
+};
+
 // get Euclidean distance between two points
 var getEuclid = function(x1, y1, x2, y2) {
     var dx = x1 - x2;

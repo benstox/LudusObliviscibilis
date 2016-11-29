@@ -281,7 +281,7 @@ var TreeTrunk = function(x, y) {
     var g = 143 + randInt(-20, 20);
     var b = 65 + randInt(-25, 25);
 
-    this.char = "tree_trunk";
+    this.ch = "tree_trunk";
     this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
     this.bg = 'black';
@@ -293,6 +293,7 @@ TreeTrunk.prototype.constructor = TreeTrunk;
 
 var TreeLeaves = function(x, y, direction) {
     TreeTrunk.apply(this, [x, y]);
+    this.transparent = true;
 
     // background
     var colourMap = getGrassColour();
@@ -300,7 +301,7 @@ var TreeLeaves = function(x, y, direction) {
     this.bg_dark = colourMap["bg_dark"];
 
     // leaves
-    this.char = "tree_" + direction;
+    this.ch = "tree_" + direction;
     this.colvar = 5;
     var r = 38 + randInt(-this.colvar, this.colvar);
     var g = 110 + randInt(-this.colvar, this.colvar);

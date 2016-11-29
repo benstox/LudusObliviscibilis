@@ -29,6 +29,27 @@ var Map = function(tile_for_floor, tile_for_wall) {
         that.list[x][y] = new (Function.prototype.bind.apply( tile, [null, x, y].concat(extra_args) ));
     };
 
+    this.place_tree = function(x, y) {
+        // trunk
+        that.set_tile(x, y, TreeTrunk);
+        // leaves
+        var get_new_locations = function(x, y, direction) {
+            var vector = getDirectionVector(direction);
+            var new_x = x + vector["x"];
+            var new_y = y + vector["y"];
+            return({"x": new_x, "y": new_y, "direction": direction});
+        };
+        var get_new_locations_w_x_y = _.partial(get_new_locations, x, y);
+
+        var vectors = _.map(["nw", "n", "ne", "w", "e", "sw", "s", "se"], get_new_locations_w_x_y);
+        
+        _.forEach(vectors, function(vector) {
+            if (isThisOnMap(vector["x"], vector["y"])) {
+                that.set_tile(vector["x"], vector["y"], TreeLeaves, vector["direction"]);
+            };
+        });
+    };
+
     // set a verticle line to be all some tile (create a wall where x = constant)
     this.set_v_line = function(x, y0, wall_length, tile, extra_arg) {
         for (var i = y0; i < y0 + wall_length; i++) {
@@ -285,5 +306,7 @@ var Map_LargeRoomInCentre = function() {
         that.set_tile( wall_start_x + 1, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
         that.set_tile( wall_start_x + 3, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
         that.set_tile( wall_start_x + 5, wall_start_y + Math.floor(Game.screen_height / 10) + 7, FloorTomb, null, null, "ecclesiastic" );
+        // set tree
+        that.place_tree(6, 5);
     };
 };
