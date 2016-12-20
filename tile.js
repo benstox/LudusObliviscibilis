@@ -303,9 +303,9 @@ var TreeLeaves = function(x, y, direction) {
     // leaves
     this.ch = "tree_" + direction;
     this.colvar = 5;
-    var r = 38 + randInt(-this.colvar, this.colvar);
-    var g = 110 + randInt(-this.colvar, this.colvar);
-    var b = 20 + randInt(-this.colvar, this.colvar);
+    var r = 30 + randInt(-this.colvar, this.colvar);
+    var g = 80 + randInt(-this.colvar, this.colvar);
+    var b = 15 + randInt(-this.colvar, this.colvar);
     this.col = 'rgb(' + r + ', ' + g + ', ' + b + ')';
     this.col_dark = 'rgb(' + Math.floor(r/4) + ', ' + Math.floor(g/4) + ', ' + (Math.floor(b/4) + 20) + ')';
     // python version divided by 2 here instead of 4

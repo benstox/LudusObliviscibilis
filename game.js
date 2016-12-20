@@ -74,3 +74,4 @@ var Game = {
 };
 
 Game.main();
+$("#main-column").css({width: Game.screen_width * Game.display_options.tileWidth + "px"});
