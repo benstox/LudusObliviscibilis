@@ -1,4 +1,7 @@
 // https://www.keithmcmillen.com/blog/making-music-in-the-browser-web-midi-api/
+// https://www.sitepoint.com/creating-accurate-timers-in-javascript/
+// http://stackoverflow.com/questions/196027/is-there-a-more-accurate-way-to-create-a-javascript-timer-than-settimeout
+
 
 // variables from the tutorial
 var log = console.log.bind(console);
