@@ -20,13 +20,7 @@ var channel;
 var type;
 var note;
 var velocity;
-var sampleMap = {
-    key60: 1,
-    key61: 2,
-    key62: 3,
-    key63: 4,
-    key64: 5
-};
+
 var play_button = $("#play-button");
 var stop_button = $("#stop-button");
 var melody_timeouts = [];
@@ -54,7 +48,7 @@ var notes = _.mapValues({
 var melody_speed = 1.1;
 
 var markov_order = 4;
-var processed_melodies = load_melody_data(VI, markov_order);
+var processed_melodies = load_melody_data(MODE_VI, markov_order);
 
 // user interaction --------------------------------------------------------------
 var clickPlayOn = function(e) {
@@ -258,36 +252,6 @@ var play_markov_melody = function() {
     score = generate_markov(processed_melodies, markov_order);
     $("#print-melody").text(score);
 
-    // melody = [ // Asperges me
-    //     {shorthand: "c", duration: 300},
-    //     {shorthand: "d", duration: 300},
-    //     {shorthand: "f", duration: 300},
-    //     {shorthand: "e", duration: 300},
-    //     {shorthand: "d", duration: 325},
-    //     {shorthand: "e", duration: 350},
-    //     {shorthand: "f", duration: 350},
-    //     {shorthand: "g", duration: 1000},
-    //     {shorthand: "h", duration: 500},
-    //     {shorthand: "ix", duration: 300},
-    //     {shorthand: "j", duration: 300},
-    //     {shorthand: "j", duration: 300},
-    //     {shorthand: "ix", duration: 300},
-    //     {shorthand: "h", duration: 300},
-    //     {shorthand: "g", duration: 300},
-    //     {shorthand: "h", duration: 300},
-    //     {shorthand: "g", duration: 750},
-    //     {shorthand: "f", duration: 300},
-    //     {shorthand: "e", duration: 300},
-    //     {shorthand: "f", duration: 350},
-    //     {shorthand: "g", duration: 300},
-    //     {shorthand: "f", duration: 300},
-    //     {shorthand: "d", duration: 300},
-    //     {shorthand: "e", duration: 350},
-    //     {shorthand: "c", duration: 600},
-    //     {shorthand: "d", duration: 600},
-    //     {shorthand: "c", duration: 700},
-    //     {shorthand: "c", duration: 800}];
-
     // turn the Markov score into a list of notes and durations
     melody = process_markov_score(score);
 
@@ -302,18 +266,30 @@ var play_markov_melody = function() {
         }, []);
 
     // play the melody!!
-    _.forEach(
-        melody,
-        function(note_to_play) {
+    var start_time = new Date().getTime();
+    var melody_loop = function(i) {
+        if (melody[i]) {
+            // get the current note from the melody
+            var note_to_play = melody[i];
+            // play the note!
+            notes[note_to_play.shorthand].play(note_to_play.velocity);
+            // recur, compensating for lag
+            var diff = (new Date().getTime() - start_time) -  note_to_play.position;
             melody_timeouts.push(setTimeout(
-                function() {
-                    notes[note_to_play.shorthand].play(note_to_play.velocity);
-                },
-                note_to_play.position
+                function() {melody_loop(i+1);},
+                note_to_play.duration - diff
             ));
-        });
-    // recur
-    melody_timeouts.push(setTimeout(play_markov_melody, melody[melody.length-1].position + 2000 * melody_speed));
+        } else {
+            // melody over
+            // recur the whole play_markov_melody thing
+            melody_timeouts.push(setTimeout(
+                play_markov_melody,
+                2000 * melody_speed
+            ));
+        };
+    };
+    // start the loop detailed above
+    melody_loop(0);
 };
 
 var stop_music = function() {
