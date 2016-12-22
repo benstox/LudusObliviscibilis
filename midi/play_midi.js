@@ -1,7 +1,8 @@
 // https://www.keithmcmillen.com/blog/making-music-in-the-browser-web-midi-api/
 // https://www.sitepoint.com/creating-accurate-timers-in-javascript/
 // http://stackoverflow.com/questions/196027/is-there-a-more-accurate-way-to-create-a-javascript-timer-than-settimeout
-
+// https://www.html5rocks.com/en/tutorials/audio/scheduling/
+// http://tangiblejs.com/posts/web-midi-music-and-show-control-in-the-browser
 
 // variables from the tutorial
 var log = console.log.bind(console);
@@ -48,7 +49,15 @@ var notes = _.mapValues({
 var melody_speed = 1.1;
 
 var markov_order = 4;
-var processed_melodies = load_melody_data(MODE_VI, markov_order);
+
+var melodies_data = {
+    VI: MODE_VI,
+    VII: MODE_VII,
+};
+
+var processed_melodies = _.mapValues(melodies_data, function(x) {return(load_melody_data(x, markov_order));});
+
+var mode_repeat_at_least = 3; // how many times to generate a new melody of the same mode before possibly switching
 
 // user interaction --------------------------------------------------------------
 var clickPlayOn = function(e) {
@@ -56,7 +65,8 @@ var clickPlayOn = function(e) {
 };
 
 var clickPlayOff = function(e) {
-    play_markov_melody();
+    var mode = randChoice(_.keys(melodies_data));
+    play_markov_melody(mode, mode_repeat_at_least);
 };
 
 var clickStopOn = function(e) {
@@ -247,10 +257,16 @@ var addAudioProperties = function(object) {
     };
 };
 
-var play_markov_melody = function() {
+var play_markov_melody = function(mode, at_least_times) {
+    // time to choose a new mode?
+    if (at_least_times < 1 && randChoice([true, false])) {
+        mode = randChoice(_.keys(melodies_data));
+        at_least_times = mode_repeat_at_least;
+    } else {
+        at_least_times = at_least_times - 1;
+    };
     // get a Markov melody!
-    score = generate_markov(processed_melodies, markov_order);
-    $("#print-melody").text(score);
+    score = generate_markov(processed_melodies[mode], markov_order);
 
     // turn the Markov score into a list of notes and durations
     melody = process_markov_score(score);
@@ -283,7 +299,7 @@ var play_markov_melody = function() {
             // melody over
             // recur the whole play_markov_melody thing
             melody_timeouts.push(setTimeout(
-                play_markov_melody,
+                function() {play_markov_melody(mode, at_least_times);},
                 2000 * melody_speed
             ));
         };
