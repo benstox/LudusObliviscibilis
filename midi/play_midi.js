@@ -25,6 +25,7 @@ var velocity;
 var play_button = $("#play-button");
 var stop_button = $("#stop-button");
 var melody_timeouts = [];
+var melody_time_intervals = [];
 
 // set up the instrument
 var instrument = "celesta-mp3";
@@ -273,49 +274,67 @@ var play_markov_melody = function(mode, at_least_times) {
 
     // work out the temporal position of each note in the melody
     // based on cummulative durations
+    var starting_position = 300; // position of the first note (may not be best as zero)
     melody = _.reduce(
         melody,
         function (acc, n) {
             acc.push(
-                _.set(n, "position", (acc.length > 0 ? acc[acc.length-1].position + acc[acc.length-1].duration : 0)));
+                _.set(n, "position", (acc.length > 0 ? acc[acc.length-1].position + acc[acc.length-1].duration : starting_position)));
             return(acc);
         }, []);
 
-    // play the melody!!
-    var start_time = new Date().getTime();
-    var melody_loop = function(i) {
-        if (melody[i]) {
-            // get the current note from the melody
-            var note_to_play = melody[i];
-            // play the note!
-            notes[note_to_play.shorthand].play(note_to_play.velocity);
-            // recur, compensating for lag
-            var diff = (new Date().getTime() - start_time) -  note_to_play.position;
-            melody_timeouts.push(setTimeout(
-                function() {melody_loop(i+1);},
-                note_to_play.duration - diff
-            ));
+    // note scheduler
+    var schedule_notes_in_interval = function() {
+        var current_time = new Date().getTime();
+        var interval_start = current_time - start_time;
+        var interval_end = interval_start + scheduler_interval;
+        if (interval_start > melody[melody.length-1].position + (2000*melody_speed)) {
+            // the melody has finished
+            // kill the schedulers and start a new melody
+            _.forEach(melody_time_intervals, function(timeout_id) {
+                clearInterval(timeout_id);
+            });
+            _.forEach(melody_timeouts, function(timeout_id) {
+                clearTimeout(timeout_id);
+            });
+            melody_timeouts = [];
+            melody_time_intervals = [];
+            play_markov_melody(mode, at_least_times);
         } else {
-            // melody over
-            // recur the whole play_markov_melody thing
-            melody_timeouts.push(setTimeout(
-                function() {play_markov_melody(mode, at_least_times);},
-                2000 * melody_speed
-            ));
+            // notes whose position is within the interval for this scheduler
+            var notes_in_interval = _.filter(melody, function(x) {
+                return(x.position >= interval_start && x.position < interval_end);
+            });
+            // schedule those notes
+            _.forEach(notes_in_interval, function(note_to_play) {
+                melody_timeouts.push(setTimeout(
+                    function() {notes[note_to_play.shorthand].play(note_to_play.velocity);},
+                    note_to_play.position - interval_start
+                ));
+            });
         };
     };
-    // start the loop detailed above
-    melody_loop(0);
+
+    // set up key numbers
+    var lookahead_time = 100; // how far ahead a scheduler will look in order to play a note (ms)
+    var scheduler_interval = 25; // how far apart each scheduler is in theory (ms)
+    var start_time = new Date().getTime();
+    // play the melody!!
+    melody_time_intervals.push(setInterval(schedule_notes_in_interval, scheduler_interval));
 };
 
 var stop_music = function() {
     _.forEach(notes, function(note) {
         note.stop();
     });
+    _.forEach(melody_time_intervals, function(timeout_id) {
+        clearInterval(timeout_id);
+    });
     _.forEach(melody_timeouts, function(timeout_id) {
         clearTimeout(timeout_id);
     });
     melody_timeouts = [];
+    melody_time_intervals = [];
 };
 
 var rangeMap = function(x, a1, a2, b1, b2) {
