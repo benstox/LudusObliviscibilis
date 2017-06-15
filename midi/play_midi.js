@@ -30,20 +30,30 @@ var melody_time_intervals = [];
 // set up the instrument
 var instrument = "celesta-mp3";
 var notes = _.mapValues({
+    z: {name: "G3"},
+    a: {name: "A3"},
+    B: {name: "Bb3"},
+    b: {name: "B3"},
     c: {name: "C4"},
+    D: {name: "Db4"},
     d: {name: "D4"},
+    E: {name: "Eb4"},
     e: {name: "E4"},
     f: {name: "F4"},
+    G: {name: "Gb4"},
     g: {name: "G4"},
+    H: {name: "Ab4"},
     h: {name: "A4"},
+    I: {name: "Bb4"},
     i: {name: "B4"},
-    ix: {name: "Bb4"},
     j: {name: "C5"},
+    K: {name: "Db5"},
     k: {name: "D5"},
     l: {name: "E5"},
     m: {name: "F5"},
     n: {name: "G5"},
-    o: {name: "A5"}}, function(v) {
+    o: {name: "A5"},
+    p: {name: "B5"}}, function(v) {
         return(_.set(v, "source", "midi/audio/" + instrument + "/" + v.name + ".mp3"));
     }
 );
@@ -51,12 +61,12 @@ var melody_speed = 1.1;
 
 var markov_order = 4;
 
-var melodies_data = {
-    VI: MODE_VI,
-    VII: MODE_VII,
-};
+// var melodies_data = {
+//     VI: MODE_VI,
+//     VII: MODE_VII,
+// };
 
-var processed_melodies = _.mapValues(melodies_data, function(x) {return(load_melody_data(x, markov_order));});
+var processed_melodies = _.mapValues(MODES, function(x) {return(load_melody_data(x, markov_order));});
 
 var mode_repeat_at_least = 3; // how many times to generate a new melody of the same mode before possibly switching
 
@@ -66,7 +76,7 @@ var clickPlayOn = function(e) {
 };
 
 var clickPlayOff = function(e) {
-    var mode = randChoice(_.keys(melodies_data));
+    var mode = randChoice(_.keys(MODES));
     play_markov_melody(mode, mode_repeat_at_least);
 };
 
@@ -261,7 +271,7 @@ var addAudioProperties = function(object) {
 var play_markov_melody = function(mode, at_least_times) {
     // time to choose a new mode?
     if (at_least_times < 1 && randChoice([true, false])) {
-        mode = randChoice(_.keys(melodies_data));
+        mode = randChoice(_.keys(MODES));
         at_least_times = mode_repeat_at_least;
     } else {
         at_least_times = at_least_times - 1;
